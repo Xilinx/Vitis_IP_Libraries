@@ -1,0 +1,23 @@
+..
+   Copyright (C) 2019-2022, Xilinx, Inc.
+   Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+   
+   `Terms and Conditions <https://www.amd.com/en/corporate/copyright>`_.
+
+.. _API_REFERENCE:
+
+======================
+API Reference Overview
+======================
+
+For all library elements, the recommended manner to use an instance of each library unit is to include an instance of the library element as a sub-graph of your graph. The graph declarations can be found in: `L2/include/aie/`. This section describes the interface to each library element, i.e., configuration parameters, constructor arguments, and ports.
+
+- `FFT IFFT <../../rst/group_fft_graphs.html>`_
+- `2D FFT IFFT <../../rst/group_fft_ifft_2dgraphs.html>`_
+- `FFT Window <../../rst/group_fft_window.html>`_
+- `FIRs <../../rst/group_fir_graphs.html>`_
+
+.. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
+   :ltrim:
+.. |reg|    unicode:: U+000AE .. REGISTERED TRADEMARK SIGN
+   :ltrim:

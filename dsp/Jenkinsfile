@@ -1,0 +1,3 @@
+@Library('pipeline-library')_
+VitisLibPipeline(libname:'xf_dsp_ip',
+                   upstream_dependencies:'xf_dsp,dev,../../Vitis_Libraries/dsp;xf_utils_hw,next,../../Vitis_Libraries/utils; xf_data_mover,next,../../Vitis_Libraries/data_mover; dsplib_internal_scripts,main,../../Vitis_Libraries/dsplib_internal_scripts')

@@ -1,0 +1,3 @@
+#cfloat/cfloat
+#make test DATA_TYPE=cfloat COEFF_TYPE=cfloat FIR_LEN=16  CASC_LEN=1 SHIFT=0
+make test DATA_TYPE=cfloat COEFF_TYPE=cfloat FIR_LEN=32  CASC_LEN=1 SHIFT=0
