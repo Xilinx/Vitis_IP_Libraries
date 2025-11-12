@@ -1,0 +1,18 @@
+{
+    "id": "xf_dsp_ip",
+    "name": "Vitis IP DSP Library",
+    "description": "Vitis IP DSP library provides implementation of different L1/L2/L3 primitives for digital signal processing. Current version provides: L2 level VSS implementation of FFT. L2 level AIE C++ graph implementation of FIRs.",
+    "v++": {
+        "includepaths": [
+            "LIB_DIR/L2/include/aie",
+            "LIB_DIR/L1/include/vss"
+        ]
+    },
+    "host": {
+        "compiler": {
+            "includepaths": [
+                "LIB_DIR/L2/include/aie"
+            ]
+        }
+    }
+}
