@@ -114,7 +114,7 @@ if { $firLen != -1 } {
     # double taps generated if complex
     set cplx [expr $isCmplxCoeff + 1]
     for {set i 0} {$i < [expr $cplx * $firLen * $tdmChannels]} {incr i} {
-        lappend coeffs $i
+        lappend coeffs [expr $i % 32768]
     }
     set coeffVectorStr [join $coeffs ","]
     puts $outFile "    \"coeff\": \[$coeffVectorStr\]"
