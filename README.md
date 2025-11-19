@@ -11,9 +11,9 @@
 
 # Vitis IP Libraries
 
-[Vitis&trade; Unified Software Platform](https://www.amd.com/en/products/software/adaptive-socs-and-fpgas/vitis.html) includes an extensive set of open-source, performance-optimized libraries that offer out-of-the-box acceleration with minimal to zero-code changes to your existing applications.
+[Vitis&trade; Unified Software Platform](https://www.amd.com/en/products/software/adaptive-socs-and-fpgas/vitis.html) includes an extensive set of open-source, performance-optimized libraries that offer out-of-the-box acceleration with minimal to zero code changes to your existing applications.
 
-The **Vitis IP Libraries** is an extension of the `Vitis Libraries <https://docs.amd.com/r/en-US/Vitis_Libraries>`_.
+**Vitis IP Libraries** are an extension of the `Vitis Libraries <https://docs.amd.com/r/en-US/Vitis_Libraries>`_.
 
 Vitis IP Libraries focus on providing multi-domain, performance-optimized IP that can leverage both the AMD Vivado™ Design Suite IP and Vitis Libraries for accelerated application development, by utilizing the `Vitis Subsystem flow <https://docs.amd.com/r/en-US/ug1701-vitis-accelerated-embedded/Vitis-Subsystem-Flow>`_.
 
@@ -21,22 +21,21 @@ Vitis IP Libraries focus on providing multi-domain, performance-optimized IP tha
 - [Vitis IP Library Documentation](https://docs.amd.com/r/en-US/Vitis_IP_Libraries)
 
 
-# Use in Familiar Programming Languages
+## Use in Familiar Programming Languages
 
-Use Vitis IP Library in commonly-used programming languages that you know like C, C++, Python, Matlab.
+Use Vitis IP Libraries in commonly-used programming languages, such as C, C++, Python, and Matlab.
 Leverage AMD Vitis |trade| latest platforms, as an enabler in your applications, e.g.:
-- `Vitis Functional Simulation <https://docs.amd.com/r/en-US/ug1701-vitis-accelerated-embedded/Vitis-Functional-Simulation-Overview>`_
 
-Work at an application level and focus your core competencies on solving challenging problems in your domain, accelerate time to insight, and innovate.
+Work at the application level—focus your core competencies on solving challenging problems in your domain, accelerate time to insight, and innovate.
 
-Whether you want to accelerate portions of your existing x86 host application code or want to develop accelerators for deployment on AMD embedded platforms, calling a Vitis accelerated-library API or Kernel in your code offers the same level of abstraction as any software library.
+Whether you want to accelerate portions of your existing x86 host application code or want to develop accelerators for deployment on AMD embedded platforms, calling a Vitis IP Library API or kernel in your code offers the same level of abstraction as any software library.
 
 
-# Scalable and Flexible
+## Scalable and Flexible
 
-Vitis accelerated-libraries are accessible to all developers through GitHub and scalable across all AMD platforms. Develop your applications using these optimized libraries and seamlessly deploy across AMD platforms at the edge, on-premise or in the cloud without having to reimplement your accelerated application.
+Vitis IP Libraries are accessible to all developers through GitHub and are scalable across all AMD platforms. Develop your applications using these optimized libraries and seamlessly deploy across AMD platforms at the edge, on-premise, or in the cloud, without having to reimplement your accelerated application.
 
-For rapid prototyping and quick evaluation of the benefits AMD can bring to your applications, you can use them as plug-and-play accelerators, called directly as an API in the user application for several workloads like Computer Vision and Image Processing, Quantitative Finance, Database, and Data Analytics among others.
+For rapid prototyping and quick evaluation of the benefits AMD can bring to your applications, you can use them as plug-and-play accelerators, called directly as an API in the user application for several workloads (such as Computer Vision and Image Processing, Quantitative Finance, Database, and Data Analytics, among others).
 
 ```python
     # AIE Graph example using key-value pairs:
@@ -52,12 +51,13 @@ For rapid prototyping and quick evaluation of the benefits AMD can bring to your
 ```
 
 
-To design custom applications, use Vitis IP Library functions as optimized algorithmic building blocks, modify them to suit your specific needs, or use them as a reference to completely design your own. Choose the flexibility you need!
+To design custom applications, use Vitis IP Library functions as optimized algorithmic building blocks, modify them to suit your specific needs, or use them as a reference to design your own. You have the flexibility to choose what works best for you.
 
 Take advantage of the
 
-# Support & Contact
-To report any issues or request support, please post your question to the Vitis section of the [Adaptive SoC & FPGA Community Forums](https://adaptivesupport.amd.com/s/topic/0TO2E000000YKXhWAO/vitis?language=en_US)
+## Support & Contact
+
+To report any issues or request support, post in the Vitis section of the [Adaptive SoC & FPGA Community Forums](https://adaptivesupport.amd.com/s/topic/0TO2E000000YKXhWAO/vitis?language=en_US).
 
 
 <hr class="sphinxhide">
