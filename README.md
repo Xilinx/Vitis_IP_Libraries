@@ -37,23 +37,8 @@ Vitis IP Libraries are accessible to all developers through GitHub and are scala
 
 For rapid prototyping and quick evaluation of the benefits AMD can bring to your applications, you can use them as plug-and-play accelerators, called directly as an API in the user application for several workloads (such as Computer Vision and Image Processing, Quantitative Finance, Database, and Data Analytics, among others).
 
-```python
-    # AIE Graph example using key-value pairs:
-    aie_graph = vfs.aieGraph(
-        input_file='<path_to_src>/front_ifft_with_twid.cpp',
-        platform='<path_to_platforms>/xilinx_vck190_base_202510_1.xpfm',
-        include_paths=[
-            '<path_to_src>',
-            '<path_to_inc>',
-            '<path_to_libraries>'
-        ]
-    )
-```
-
-
 To design custom applications, use Vitis IP Library functions as optimized algorithmic building blocks, modify them to suit your specific needs, or use them as a reference to design your own. You have the flexibility to choose what works best for you.
 
-Take advantage of the
 
 ## Support & Contact
 
