@@ -311,73 +311,6 @@ For the FFT/iFFT library element, use the following list of configurable paramet
 
 .. note:: Given parameter values are subject to checks early in compilation to ensure support. See :ref:`LEGALITY_CHECKING`
 
-.. _CONFIGURATION_PARAMETERS_FFT_WINDOW:
-
-FFT Window Configuration Parameters
---------------------------------------
-
-For the FFT Window library element, use the following list of configurable parameters and default values.
-
-.. table:: FFT Window Configuration Parameters
-
-    +------------------------+----------------+----------------+--------------------------------------+
-    |     **Name**           |    **Type**    |  **Default**   |   Description                        |
-    +========================+================+================+======================================+
-    | DATA_TYPE              |    typename    |    cint16      | Data Type.                           |
-    |                        |                |                |                                      |
-    +------------------------+----------------+----------------+--------------------------------------+
-    | COEFF_TYPE             |    typename    |    cint16      | Coeff Type.                          |
-    |                        |                |                |                                      |
-    +------------------------+----------------+----------------+--------------------------------------+
-    | POINT_SIZE             |    unsigned    |    1024        | FFT point size.                      |
-    |                        |                |                |                                      |
-    +------------------------+----------------+----------------+--------------------------------------+
-    | SHIFT                  |    unsigned    |    17          | See :ref:`COMMON_CONFIG_PARAMETERS`  |
-    |                        |                |                |                                      |
-    +------------------------+----------------+----------------+--------------------------------------+
-    | WINDOW_VSIZE           |    unsigned    |    1024        | Input/Output window size.            |
-    |                        |                |                |                                      |
-    |                        |                |                | By default, set to: $(POINT_SIZE).   |
-    +------------------------+----------------+----------------+--------------------------------------+
-    | DYN_PT_SIZE            |    unsigned    |    0           | Enable (1) Dynamic Point size        |
-    |                        |                |                | feature.                             |
-    +------------------------+----------------+----------------+--------------------------------------+
-    | API_IO                 |    unsigned    |    0           | Graph's port API.                    |
-    |                        |                |                |                                      |
-    |                        |                |                | 0: window                            |
-    |                        |                |                |                                      |
-    |                        |                |                | 1: stream                            |
-    |                        |                |                |                                      |
-    +------------------------+----------------+----------------+--------------------------------------+
-    | WINDOW_CHOICE          |    unsigned    |    0           | Supported types:                     |
-    |                        |                |                |                                      |
-    |                        |                |                | 0: Hamming                           |
-    |                        |                |                |                                      |
-    |                        |                |                | 1: Hann                              |
-    |                        |                |                |                                      |
-    |                        |                |                | 2: Blackman                          |
-    |                        |                |                |                                      |
-    |                        |                |                | 3: Kaiser                            |
-    |                        |                |                |                                      |
-    +------------------------+----------------+----------------+--------------------------------------+
-    | NITER                  |    unsigned    |    4           | See :ref:`COMMON_CONFIG_PARAMETERS`  |
-    |                        |                |                |                                      |
-    +------------------------+----------------+----------------+--------------------------------------+
-    | DIFF_TOLERANCE         |    unsigned    |    0           | See :ref:`COMMON_CONFIG_PARAMETERS`  |
-    |                        |                |                |                                      |
-    +------------------------+----------------+----------------+--------------------------------------+
-    | ROUND_MODE             |    unsigned    |    0           | See :ref:`COMMON_CONFIG_PARAMETERS`  |
-    |                        |                |                |                                      |
-    +------------------------+----------------+----------------+--------------------------------------+
-    | SAT_MODE               |    unsigned    |    1           | See :ref:`COMMON_CONFIG_PARAMETERS`  |
-    |                        |                |                |                                      |
-    +------------------------+----------------+----------------+--------------------------------------+
-    | STIM_TYPE              |    unsigned    |    0           | See :ref:`COMMON_CONFIG_PARAMETERS`  |
-    |                        |                |                |                                      |
-    +------------------------+----------------+----------------+--------------------------------------+
-
-.. note:: Given parameter values are subject to checks early in compilation to ensure support. See :ref:`LEGALITY_CHECKING`
-
 .. _CONFIGURATION_PARAMETERS_FILTERS:
 
 FIR Configuration Parameters
@@ -472,7 +405,7 @@ The following list consists of configurable parameters for FIR library elements 
 
 .. note:: Given parameter values are subject to checks early in compilation to ensure support. See :ref:`LEGALITY_CHECKING`
 
-.. note:: Not all dsplib elements support all of the above configurable parameters. Unsupported parameters which are not used have no impact on execution, e.g., the `INTERPOLATE_FACTOR` parameter is only supported by interpolation filters and will be ignored by other library elements.
+.. note:: Not all dspiplib elements support all of the above configurable parameters. Unsupported parameters which are not used have no impact on execution, e.g., the `INTERPOLATE_FACTOR` parameter is only supported by interpolation filters and will be ignored by other library elements.
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
    :ltrim:

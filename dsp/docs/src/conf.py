@@ -34,7 +34,7 @@ sys.path.insert(1, os.path.join(tools_dir, "share/doxyrest_b/sphinx"))
 
 # -- Project information -----------------------------------------------------
 
-project = "Vitis DSP Library"
+project = "Vitis DSP IP Library"
 copyright = "2019-2022, Xilinx Inc. 2022-2025, Advanced Micro Devices, Inc."
 author = "Xilinx Inc."
 
@@ -54,6 +54,7 @@ release = "v2025.2"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinx.ext.graphviz",
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
@@ -79,7 +80,7 @@ autosectionlabel_prefix_document = True
 
 # Configure 'Edit on GitHub' extension
 edit_on_github_project = "Xilinx/Vitis_Libraries"
-edit_on_github_branch = "master/dsp/docs/src"
+edit_on_github_branch = "master/dsp_ip/docs/src"
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -155,7 +156,7 @@ html_static_path = ["_static"]
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "xf_dsp"
+htmlhelp_basename = "xf_dsp_ip"
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -179,7 +180,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "xf_dsp.tex", "Vitis DSP Library Documentation", "Xilinx ", "manual"),
+    (master_doc, "xf_dsp_ip.tex", "Vitis DSP IP Library Documentation", "Xilinx ", "manual"),
 ]
 
 
@@ -187,7 +188,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "xf_dsp", "Vitis DSP Library Documentation", [author], 1)]
+man_pages = [(master_doc, "xf_dsp_ip", "Vitis DSP IP Library Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output ----------------------------------------------
@@ -198,8 +199,8 @@ man_pages = [(master_doc, "xf_dsp", "Vitis DSP Library Documentation", [author],
 texinfo_documents = [
     (
         master_doc,
-        "xf_dsp",
-        "Vitis DSP Library Documentation",
+        "xf_dsp_ip",
+        "Vitis DSP IP Library Documentation",
         author,
         "Xilinx",
         "The Vitis™ digital signal processing library.",

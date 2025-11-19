@@ -10,7 +10,7 @@
 Filters
 =======
 
-The DSPLib contains several variants of finite impulse response (FIR) filters. These include single-rate FIRs, half-band interpolation/decimation FIRs, as well as integer and fractional interpolation/decimation FIRs.
+The DSPIPLib contains several variants of finite impulse response (FIR) filters. These include single-rate FIRs, half-band interpolation/decimation FIRs, as well as integer and fractional interpolation/decimation FIRs.
 
 .. _FILTER_ENTRY:
 
@@ -21,7 +21,7 @@ FIR filters have been categorized into classes and placed in a distinct namespac
 
 .. code-block::
 
-    namespace dsplib = xf::dsp::aie;
+    namespace dspiplib = xf::dsp::aie;
 
 Additionally, each FIR filter has been placed in its unique FIR type namespace. The available FIR filter classes and the corresponding graph entry point are listed as follows:
 
@@ -30,24 +30,24 @@ Additionally, each FIR filter has been placed in its unique FIR type namespace. 
 .. table:: FIR Filter Classes
    :align: center
 
-   +----------------------------------+-----------------------------------------------------------+
-   |    **Function**                  | **Namespace and Class Name**                              |
-   +==================================+===========================================================+
-   | Single rate, asymmetrical        | dsplib::fir::sr_asym::fir_sr_asym_graph                   |
-   +----------------------------------+-----------------------------------------------------------+
-   | Single rate, symmetrical         | dsplib::fir::sr_sym::fir_sr_sym_graph                     |
-   +----------------------------------+-----------------------------------------------------------+
-   | Interpolation asymmetrical       | dsplib::fir::interpolate_asym::fir_interpolate_asym_graph |
-   +----------------------------------+-----------------------------------------------------------+
-   | Decimation, half-band            | dsplib::fir::decimate_hb::fir_decimate_hb_graph           |
-   +----------------------------------+-----------------------------------------------------------+
-   | Interpolation, half-band         | dsplib::fir::interpolate_hb::fir_interpolate_hb_graph     |
-   +----------------------------------+-----------------------------------------------------------+
-   | Decimation, asymmetric           | dsplib::fir::decimate_asym::fir_decimate_asym_graph       |
-   +----------------------------------+-----------------------------------------------------------+
-   | Interpolation or decimation,     | dsplib::fir::resampler::fir_resampler_graph               |
-   | fractional, asymmetric           |                                                           |
-   +----------------------------------+-----------------------------------------------------------+
+   +----------------------------------+--------------------------------------------------------------+
+   |    **Function**                  | **Namespace and Class Name**                                 |
+   +==================================+==============================================================+
+   | Single rate, asymmetrical        | dspiplib::fir::sr_asym::fir_sr_asym_graph                    |
+   +----------------------------------+--------------------------------------------------------------+
+   | Single rate, symmetrical         | dspiplib::fir::sr_sym::fir_sr_sym_graph                      |
+   +----------------------------------+--------------------------------------------------------------+
+   | Interpolation asymmetrical       | dspiplib::fir::interpolate_asym::fir_interpolate_asym_graph  |
+   +----------------------------------+--------------------------------------------------------------+
+   | Decimation, half-band            | dspiplib::fir::decimate_hb::fir_decimate_hb_graph            |
+   +----------------------------------+--------------------------------------------------------------+
+   | Interpolation, half-band         | dspiplib::fir::interpolate_hb::fir_interpolate_hb_graph      |
+   +----------------------------------+--------------------------------------------------------------+
+   | Decimation, asymmetric           | dspiplib::fir::decimate_asym::fir_decimate_asym_graph        |
+   +----------------------------------+--------------------------------------------------------------+
+   | Interpolation or decimation,     | dspiplib::fir::resampler::fir_resampler_graph                |
+   | fractional, asymmetric           |                                                              |
+   +----------------------------------+--------------------------------------------------------------+
 
 Device Support
 ==============
@@ -119,12 +119,12 @@ Design Notes
 Additional Features of FIRs in DSP IP Library
 ---------------------------------------------
 
-Compared to the Vitis Library DSP offering, the following enhancements have been made:
+Compared to the Vitis Library DSP IP offering, the following enhancements have been made:
 
-.. note::
+   - Memory storage for coefficients has been reorganized. This results in reduced Program Memory (PM) usage, and reduced data memory usage.
 
-   - Memory storage for coefficients has been reorganized to enhance memory footprint efficiency.
    - RTP ports for reloadable coefficients have been restructured, improving both memory footprint and throughput efficiency. No runtime checks are performed, allowing the RTP solution to achieve maximum throughput, nearly matching the performance of static coefficient solutions without any drawbacks.
+
    - Usability has been improved with the introduction of the ``update_rtp()`` method, which streamlines the process of updating coefficients at runtime to a single method call.
 
 .. _COEFFS_FOR_FIRS:
@@ -192,6 +192,7 @@ The `main` function of the host application initializes the graph, updates the R
 Next, the `main` function runs the filter for a specified number of iterations and properly ends the graph execution.
 
 .. code-block:: cpp
+
    // This is a header file, e.g. "test.hpp" that is included in the corresponding cpp file.
 
    class test_graph : public adf::graph {
@@ -239,8 +240,8 @@ Next, the `main` function runs the filter for a specified number of iterations a
 The update_rtp is a simple to use method that abstracts the implementation details of updating RTP ports with new coefficient values. It performs the following steps:
 
 - read total number of rtp ports, using  ``getTotalRtpPorts()``. For details see :ref:`RTP_PORTS_FOR_FIR`.
-- for each port, read the size of the port, using ``getRtpPortSize(int port)``. For details see :ref:`RTP_PORT_SIZE_FOR_FIR`.
-- for each port, extract the corresponding taps using the ``extractTaps()`` method. For details see :ref:`RTP_ARRAY_SIZE_FOR_FIR`.
+- for each port, read the size of the port, using ``getRtpPortSize(int port)``. For details see :ref:`RTP_ARRAY_SIZE_FOR_FIR`.
+- for each port, extract the corresponding taps using the ``extractTaps()`` method. For details see :ref:`RTP_ARRAY_CONTENTS_FOR_FIR`.
 - for each port, update the RTP port with the new taps using the graphs ``update()`` method. For details see `UG1079 Run-Time Parameter Update/Read Mechanisms <https://docs.amd.com/r/en-US/ug1079-ai-engine-kernel-coding/Runtime-Parameter-Update/Read-Mechanisms>`_.
 
 .. _RTP_PORTS_FOR_FIR:
@@ -270,7 +271,7 @@ For example, if ``TP_FIR_LEN = 6`` , if ``TP_SSR = 2`` and ``TP_CASC_LEN = 3``, 
 FIR graph class provides a helper method: ``getTapsPerRtpPort(int kernelNo)`` to get number of FIR taps per RTP port. For more details, refer to: :ref:`API_REFERENCE`.
 
 
-.. _RTP_ARRAY_SIZE_FOR_FIR:
+.. _RTP_ARRAY_CONTENTS_FOR_FIR:
 
 Reloadable Coefficients - Array Contents
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -695,15 +696,6 @@ As a result, each FIR sub-graph operates on a fraction of coefficients and a fra
 
 In addition, each FIR sub-graph can be further split into multiple FIR kernels with the use of a cascade interface, which is driven by the ``TP_CASC_LEN`` template parameter.
 
-For example, a FIR with ``TP_SSR = 4`` and ``TP_CASC_LEN = 2`` will create a kernel structure presented as follows, in :ref:`FIGURE_FIR_SSR`.
-
-.. _FIGURE_FIR_SSR:
-
-.. figure:: ./media/SSR_FIR_6_5in.png
-
-
-   **Internal structure of FIR with TP_SSR = 4 and TP_CASC_LEN = 2**
-
 Super Sample Rate - Coefficient and Data Distribution - Resampling Limitations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -858,7 +850,7 @@ For more details about how to configure the various parameters to meet various p
 Constraints
 -----------
 
-Should it be necessary to apply constraints within the FIR instance to achieve successful mapping of the design, you need to know the internal instance names for graph and kernel names. See :ref:`FIGURE_FIR_SSR`.
+Should it be necessary to apply constraints within the FIR instance to achieve successful mapping of the design, you need to know the internal instance names for graph and kernel names.
 
 Each FIR variant has a variety of access methods to help assign a constraint on a kernel and/or a net, e.g.:
 
@@ -868,7 +860,6 @@ Each FIR variant has a variety of access methods to help assign a constraint on 
 
 More details are provided in the :ref:`API_REFERENCE`.
 
-An example of how to use this is given in the section :ref:`FIR_CODE_EXAMPLE`.
 When configured for a SSR operation, the FIR has a two-dimensional array (paths x phases) of units which are themselves FIRs, though each atomic FIR in this structure can itself be a series of kernels as described by ``TP_CASC_LEN``. The `getKernels()` access function returns a pointer to the array of kernels within the SSR FIR. This array will have ``TP_SSR * TP_SSR * TP_CASC_LEN`` members. The index in the array is determined by its path number, phase number and cascade position as shown in the following equation.
 
 .. code-block::
@@ -878,18 +869,6 @@ When configured for a SSR operation, the FIR has a two-dimensional array (paths 
 For example, in a design with ``TP_CASC_LEN = 2`` and ``TP_SSR = 3``, the first kernel of the last path would have an index 12.
 
 The nets returned by the `getInNet()` function can be assigned custom fifo_depths values to override the defaults.
-
-.. _FIR_CODE_EXAMPLE:
-
-Code Example
-============
-
-The following code example shows how a FIR graph class might be used within a user super-graph, including example code to set the runtime ratio of kernels within the FIR graph class.
-
-.. literalinclude:: ../../../../L2/examples/docs_examples/test_fir.hpp
-    :language: cpp
-    :lines: 17-
-
 
 .. _FIR_CONFIGURATION_NOTES:
 
