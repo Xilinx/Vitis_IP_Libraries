@@ -23,24 +23,38 @@ Vitis IP Libraries focus on providing multi-domain, performance-optimized IP tha
 
 # Use in Familiar Programming Languages
 
-Use Vitis IP Library in commonly-used programming languages that you know like C, C++, and Python. Leverage Xilinx platforms as an enabler in your applications – Work at an application level and focus your core competencies on solving challenging problems in your domain, accelerate time to insight, and innovate.
+Use Vitis IP Library in commonly-used programming languages that you know like C, C++, Python, Matlab.
+Leverage AMD Vitis |trade| latest platforms, as an enabler in your applications, e.g.:
+- `Vitis Functional Simulation <https://docs.amd.com/r/en-US/ug1701-vitis-accelerated-embedded/Vitis-Functional-Simulation-Overview>`_
 
-Whether you want to accelerate portions of your existing x86 host application code or want to develop accelerators for deployment on Xilinx embedded platforms, calling a Vitis accelerated-library API or Kernel in your code offers the same level of abstraction as any software library.
+Work at an application level and focus your core competencies on solving challenging problems in your domain, accelerate time to insight, and innovate.
 
-![Programming Languages](https://xilinx.github.io/Vitis_Libraries/_images/1569434541001.png)
+Whether you want to accelerate portions of your existing x86 host application code or want to develop accelerators for deployment on AMD embedded platforms, calling a Vitis accelerated-library API or Kernel in your code offers the same level of abstraction as any software library.
+
 
 # Scalable and Flexible
 
-Vitis accelerated-libraries are accessible to all developers through GitHub and scalable across all Xilinx platforms. Develop your applications using these optimized libraries and seamlessly deploy across Xilinx platforms at the edge, on-premise or in the cloud without having to reimplement your accelerated application.
+Vitis accelerated-libraries are accessible to all developers through GitHub and scalable across all AMD platforms. Develop your applications using these optimized libraries and seamlessly deploy across AMD platforms at the edge, on-premise or in the cloud without having to reimplement your accelerated application.
 
-For rapid prototyping and quick evaluation of the benefits Xilinx can bring to your applications, you can use them as plug-and-play accelerators, called directly as an API in the user application for several workloads like Computer Vision and Image Processing, Quantitative Finance, Database, and Data Analytics among others.
+For rapid prototyping and quick evaluation of the benefits AMD can bring to your applications, you can use them as plug-and-play accelerators, called directly as an API in the user application for several workloads like Computer Vision and Image Processing, Quantitative Finance, Database, and Data Analytics among others.
 
-![Scalable and Flexible](https://xilinx.github.io/Vitis_Libraries/_images/1569434644122.png)
+```python
+    # AIE Graph example using key-value pairs:
+    aie_graph = vfs.aieGraph(
+        input_file='<path_to_src>/front_ifft_with_twid.cpp',
+        platform='<path_to_platforms>/xilinx_vck190_base_202510_1.xpfm',
+        include_paths=[
+            '<path_to_src>',
+            '<path_to_inc>',
+            '<path_to_libraries>'
+        ]
+    )
+```
+
 
 To design custom applications, use Vitis IP Library functions as optimized algorithmic building blocks, modify them to suit your specific needs, or use them as a reference to completely design your own. Choose the flexibility you need!
 
-
-![Scalable and Flexible Library Functions](https://xilinx.github.io/Vitis_Libraries/_images/1568760747007.png)
+Take advantage of the
 
 # Support & Contact
 To report any issues or request support, please post your question to the Vitis section of the [Adaptive SoC & FPGA Community Forums](https://adaptivesupport.amd.com/s/topic/0TO2E000000YKXhWAO/vitis?language=en_US)
