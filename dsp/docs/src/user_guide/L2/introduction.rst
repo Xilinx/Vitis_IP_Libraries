@@ -6,11 +6,11 @@
 
 .. _INTRODUCTION:
 
-********************************
-Introduction for AIE DSP library
-********************************
+***********************************
+Introduction for AIE DSP IP library
+***********************************
 
-The DSP Library for AI Engine provides a set of DSP library elements. Each library element consists of a main graph class and a corresponding kernel class, but also includes a reference model graph and kernel classes.
+The DSP IP Library for AI Engine provides a set of DSP IP library elements. Each library element consists of a main graph class and a corresponding kernel class, but also includes a reference model graph and kernel classes.
 
 ====================================
 Navigating Content by Design Process
@@ -41,10 +41,6 @@ AMD documentation is organized around a set of standard design processes to help
 
    -  :ref:`FFT_IFFT`
 
-   -  :ref:`FFT_2D`
-
-   -  :ref:`FFT_WINDOW`
-
    -  :ref:`FILTERS`
 
    -  :ref:`FIR_TDM`
@@ -62,45 +58,42 @@ AMD documentation is organized around a set of standard design processes to help
 Organization
 ============
 
-The following figure shows the DSPLib organization.
+The following figure shows the DSPIPLib organization.
 
-**DSPLib Organization**
+**DSPIPLib Organization**
 
-.. blockdiag::
+.. graphviz::
    :caption: DSPLib Directory Organization
 
-   blockdiag {
-      dsp [shape = box, label = "dsp"];
-      docs [shape = box];
-      scripts [shape = box];
+   digraph DSPLib {
+      dsp [shape=box, label="dsp"];
+      docs [shape=box];
+      scripts [shape=box];
 
-      L1 [shape = box, label = "L1"];
-      L1_include [shape = box, label = "include"];
-      L1_include_aie [shape = box, label = "aie"];
-      L1_src [shape = box, label = "src"];
-      L1_src_aie [shape = box, label = "aie"];
-      L1_tests [shape = box, label = "tests"];
+      L1 [shape=box, label="L1"];
+      L1_include [shape=box, label="include"];
+      L1_include_aie [shape=box, label="aie"];
+      L1_src [shape=box, label="src"];
+      L1_src_aie [shape=box, label="aie"];
+      L1_tests [shape=box, label="tests"];
 
-      L2 [shape = box, label = "L2"];
-      L2_benchmarks [shape = box, label = "benchmarks"];
-      L2_examples [shape = box, label = "examples"];
-      L2_include [shape = box, label = "include"];
-      L2_include_aie [shape = box, label = "aie"];
-      L2_include_vss [shape = box, label = "vss"];
-      L2_meta [shape = box, label = "meta"];
-      L2_tests [shape = box, label = "tests"];
-      L2_tests_aie [shape = box, label = "aie"];
-      L2_tests_hw [shape = box, label = "hw"];
-      L2_tests_vss [shape = box, label = "vss"];
+      L2 [shape=box, label="L2"];
+      L2_benchmarks [shape=box, label="benchmarks"];
+      L2_examples [shape=box, label="examples"];
+      L2_include [shape=box, label="include"];
+      L2_include_aie [shape=box, label="aie"];
+      L2_include_vss [shape=box, label="vss"];
+      L2_meta [shape=box, label="meta"];
+      L2_tests [shape=box, label="tests"];
+      L2_tests_aie [shape=box, label="aie"];
+      L2_tests_vss [shape=box, label="vss"];
 
       dsp -> docs;
       dsp -> scripts;
       dsp -> L1;
       dsp -> L2;
 
-      L1 -> L1_examples;
       L1 -> L1_include;
-      L1 -> L1_meta;
       L1 -> L1_src;
       L1 -> L1_tests;
 
@@ -114,13 +107,12 @@ The following figure shows the DSPLib organization.
       L2 -> L2_tests;
 
       L2_include -> L2_include_aie;
-      L2_include -> L2_include_hw;
       L2_include -> L2_include_vss;
 
       L2_tests -> L2_tests_aie;
-      L2_tests -> L2_tests_hw;
       L2_tests -> L2_tests_vss;
    }
+
 
 
 
@@ -146,21 +138,21 @@ It is recommended that the library element to include in your graph is from the 
 
 An example `test.h` and `test.cpp`, which instantiates a parameterized graph and exposes a configured (point solution) interface, is provided in the `L2/examples/fir_129t_sym` folder.
 
-Set the environment variable to DSPLIB_ROOT.
+Set the environment variable to DSPIPLIB_ROOT.
 
 .. code-block::
 
-    setenv DSPLIB_ROOT <your-vitis-libraries-install-path/dsp>
+    setenv DSPIPLIB_ROOT <your-vitis-libraries-install-path/dsp_ip>
 
-.. note:: Use setenv for csh and export DSPLIB_ROOT=<path> for bash.
+.. note:: Use setenv for csh and export DSPIPLIB_ROOT=<path> for bash.
 
 Use the following option in the aiecompiler command to provide the path:
 
 .. code-block::
 
-    -include=$DSPLIB_ROOT/L2/include/aie/
-    -include=$DSPLIB_ROOT/L1/include/aie
-    -include=$DSPLIB_ROOT/L1/src/aie
+    -include=$DSPIPLIB_ROOT/L2/include/aie/
+    -include=$DSPIPLIB_ROOT/L1/include/aie
+    -include=$DSPIPLIB_ROOT/L1/src/aie
 
 .. _KNOWN_ISSUES:
 
@@ -173,13 +165,13 @@ See Answer Record `75802 <https://www.xilinx.com/support/answers/75802.html>`__ 
 
 .. _TUTORIALS:
 
-========================
+===============
 Vitis Tutorials
-========================
+===============
 
 AMD provides an extensive library of purpose build tutorials. It is recommended to visit `Vitis Tutorials <https://github.com/Xilinx/Vitis-Tutorials>`__ to get familiar with the AMD Vitis |trade| in-Depth tutorials.
 
-To learn how to use the Vitis core tools to develop for AMD Versal |trade|, the first Adaptive SoC, visit `AI Engine Development Tutorials <https://github.com/Xilinx/Vitis-Tutorials/tree/HEAD/AI_Engine_Development>`__. There is a variety of design, methodology, and feature tutorials, where you can also find a highly recommended `DSP Library Tutorial <https://github.com/Xilinx/Vitis-Tutorials/tree/HEAD/AI_Engine_Development/AIE/Feature_Tutorials/08-dsp-library>`__, which demonstrates how to use kernels provided by the DSP library for a filtering application, how to analyze the design results, and how to use filter parameters to optimize the design's performance using simulation.
+To learn how to use the Vitis core tools to develop for AMD Versal |trade|, the first Adaptive SoC, visit `AI Engine Development Tutorials <https://github.com/Xilinx/Vitis-Tutorials/tree/HEAD/AI_Engine_Development>`__. There is a variety of design, methodology, and feature tutorials, where you can also find a highly recommended `DSP Library Tutorial <https://github.com/Xilinx/Vitis-Tutorials/tree/HEAD/AI_Engine_Development/AIE/Feature_Tutorials/08-dsp-library>`__, which demonstrates how to use kernels provided by the DSP IP library for a filtering application, how to analyze the design results, and how to use filter parameters to optimize the design's performance using simulation.
 
 Finally, Simulink users might be interested in the `AI Engine DSP Library and Model Composer Tutorial <https://github.com/Xilinx/Vitis-Tutorials/tree/HEAD/AI_Engine_Development/AIE/Feature_Tutorials/10-aie-dsp-lib-model-composer>`__, which shows how to design AI Engine applications using Model Composer.
 

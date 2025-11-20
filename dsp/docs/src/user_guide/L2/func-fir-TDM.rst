@@ -10,7 +10,7 @@
 FIR TDM
 =======
 
-The DSPLib contains a Time-Division Multiplexing (TDM) variant of finite impulse response (FIR) filter.
+The DSPIPLib contains a Time-Division Multiplexing (TDM) variant of finite impulse response (FIR) filter.
 It is a multi-channel FIR filter with configurable application parameters, e.g. number of channels, FIR length, as well as implementation parameters, e.g. IO buffer size or super sample rate (SSR) operation mode.
 
 .. _FIR_TDM_ENTRY:
@@ -143,7 +143,7 @@ TDM Channels of will be split by ``TP_SSR`` and FIR taps (for each channel) will
 
 For more details on multi-kernel modes, refer to: :ref:`FIR_TDM_CASCADE_OPERATION` and :ref:`FIR_TDM_SSR_OPERATION`.
 
-.. _UPDATE_RTP_FIR:
+.. _UPDATE_RTP_FIR_TDM:
 
 Reloadable Coefficients - `update_rtp()` method
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -160,6 +160,7 @@ The `main` function of the host application initializes the graph, updates the R
 Next, the `main` function runs the filter for a specified number of iterations and properly ends the graph execution.
 
 .. code-block:: cpp
+
    // This is a header file, e.g. "test.hpp" that is included in the corresponding cpp file.
 
    class test_graph : public adf::graph {
@@ -205,11 +206,11 @@ Next, the `main` function runs the filter for a specified number of iterations a
       return 0;
    }
 
-The update_rtp is a simple to use method that abstracts the implementation details of updating RTP ports with new coefficient values. It performs the following steps:
+The ``update_rtp`` is a simple to use method that abstracts the implementation details of updating RTP ports with new coefficient values. It performs the following steps:
 
 - read total number of rtp ports, using  ``getTotalRtpPorts()``. For details see :ref:`RTP_PORTS_FOR_TDM_FIR`.
-- for each port, read the size of the port, using ``getRtpPortSize(int port)``. For details see :ref:`RTP_PORT_SIZE_FOR_TDM_FIR`.
-- for each port, extract the corresponding taps using the ``extractTaps()`` method. For details see :ref:`RTP_ARRAY_SIZE_FOR_TDM_FIR`.
+- for each port, read the size of the port, using ``getRtpPortSize(int port)``. For details see :ref:`RTP_ARRAY_SIZE_FOR_TDM_FIR`.
+- for each port, extract the corresponding taps using the ``extractTaps()`` method. For details see :ref:`RTP_ARRAY_CONTENTS_FOR_TDM_FIR`.
 - for each port, update the RTP port with the new taps using the graphs ``update()`` method. For details see `UG1079 Run-Time Parameter Update/Read Mechanisms <https://docs.amd.com/r/en-US/ug1079-ai-engine-kernel-coding/Runtime-Parameter-Update/Read-Mechanisms>`_.
 
 .. _RTP_PORTS_FOR_TDM_FIR:
@@ -239,7 +240,7 @@ For example, if ``TP_FIR_LEN = 6`` and ``TP_TDM_CHANNELS = 16``, if ``TP_SSR = 2
 FIR TDM graph class provides a helper method: ``getTapsPerRtpPort(int kernelNo)`` to get number of FIR taps per RTP port. For more details, refer to: :ref:`API_REFERENCE`.
 
 
-.. _RTP_ARRAY_SIZE_FOR_TDM_FIR:
+.. _RTP_ARRAY_CONTENTS_FOR_TDM_FIR:
 
 Reloadable Coefficients - Array Contents
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -469,19 +470,6 @@ TDM FIR variant has a variety of access methods to help assign a constraint on a
 - `getKernels()` which returns a pointer to an array of kernel pointers, or
 
 More details are provided in the :ref:`API_REFERENCE`.
-
-An example of how to use this is given in the section :ref:`FIR_TDM_CODE_EXAMPLE`.
-
-.. _FIR_TDM_CODE_EXAMPLE:
-
-Code Example
-============
-
-The following code example shows how a TDM FIR graph class might be used within a user super-graph, including example code to set the runtime ratio of kernels within the FIR graph class.
-
-.. literalinclude:: ../../../../L2/examples/docs_examples/test_fir_tdm.hpp
-    :language: cpp
-    :lines: 17-
 
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
