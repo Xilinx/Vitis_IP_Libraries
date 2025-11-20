@@ -11,11 +11,13 @@
 
 # Vitis IP Libraries
 
-[Vitis&trade; Unified Software Platform](https://www.amd.com/en/products/software/adaptive-socs-and-fpgas/vitis.html) includes an extensive set of open-source, performance-optimized libraries that offer out-of-the-box acceleration with minimal to zero code changes to your existing applications.
+[AMD Vitis&trade; Unified Software Platform](https://www.amd.com/en/products/software/adaptive-socs-and-fpgas/vitis.html) includes an extensive set of open-source, performance-optimized libraries that offer out-of-the-box acceleration with minimal to zero code changes to your existing applications.
 
 **Vitis IP Libraries** are an extension of the `Vitis Libraries <https://docs.amd.com/r/en-US/Vitis_Libraries>`_.
 
-Vitis IP Libraries focus on providing multi-domain, performance-optimized IP that can leverage both the AMD Vivado™ Design Suite IP and Vitis Libraries for accelerated application development, by utilizing the `Vitis Subsystem flow <https://docs.amd.com/r/en-US/ug1701-vitis-accelerated-embedded/Vitis-Subsystem-Flow>`_.
+Vitis IP Libraries focus on providing multi-domain, performance-optimized IP that can leverage both the AMD Vivado™ Design Suite IP and Vitis Libraries for accelerated application development.
+
+## Comprehensive Documentation
 
 - [Vitis Library Documentation](https://docs.amd.com/r/en-US/Vitis_Libraries)
 - [Vitis IP Library Documentation](https://docs.amd.com/r/en-US/Vitis_IP_Libraries)
@@ -24,9 +26,8 @@ Vitis IP Libraries focus on providing multi-domain, performance-optimized IP tha
 ## Use in Familiar Programming Languages
 
 Use Vitis IP Libraries in commonly-used programming languages, such as C, C++, Python, and Matlab.
-Leverage AMD Vitis |trade| latest platforms, as an enabler in your applications, e.g.:
 
-Work at the application level—focus your core competencies on solving challenging problems in your domain, accelerate time to insight, and innovate.
+Leverage Vitis platforms as an enabler in your applications—work at the application level and focus your core competencies on solving challenging problems in your domain, accelerate time to insight, and innovate.
 
 Whether you want to accelerate portions of your existing x86 host application code or want to develop accelerators for deployment on AMD embedded platforms, calling a Vitis IP Library API or kernel in your code offers the same level of abstraction as any software library.
 
