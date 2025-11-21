@@ -13,7 +13,7 @@
 
 [AMD Vitis&trade; Unified Software Platform](https://www.amd.com/en/products/software/adaptive-socs-and-fpgas/vitis.html) includes an extensive set of open-source, performance-optimized libraries that offer out-of-the-box acceleration with minimal to zero code changes to your existing applications.
 
-**Vitis IP Libraries** are an extension of the `Vitis Libraries <https://docs.amd.com/r/en-US/Vitis_Libraries>`_.
+**Vitis IP Libraries** are an extension of the [Vitis Libraries](https://github.com/Xilinx/Vitis_Libraries).
 
 Vitis IP Libraries focus on providing multi-domain, performance-optimized IP that can leverage both the AMD Vivado™ Design Suite IP and Vitis Libraries for accelerated application development.
 
