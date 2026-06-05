@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #ifndef _DSPLIB_TL_HPP_
 #define _DSPLIB_TL_HPP_
 
@@ -32,7 +31,15 @@ decomposed fft .
 #define QUOTE(x) Q(x)
 #define NITER 1
 #define AIE_GRAPH vss_fft_ifft_1d_graph
-
+#ifndef CASC_LEN
+#define CASC_LEN 1
+#endif
+#ifndef USE_WIDGETS
+#define USE_WIDGETS 0
+#endif
+#ifndef API_IO
+#define API_IO 0
+#endif
 #include QUOTE(AIE_GRAPH.hpp)
 
 using namespace adf;
@@ -46,7 +53,8 @@ class tl_graph : public graph {
    private:
    public:
     static constexpr int kStreamsPerTile = get_input_streams_core_module(); // a device trait
-    static constexpr int kPortsPerTile = API_IO == 0 ? 1 : kStreamsPerTile;
+    static constexpr int kWindowAPI = 0;
+    static constexpr int kPortsPerTile = kWindowAPI == 0 ? 1 : kStreamsPerTile;
     std::array<input_plio, SSR> back_i;
     std::array<output_plio, SSR> back_o;
     std::array<input_plio, SSR> front_i;
@@ -62,7 +70,7 @@ class tl_graph : public graph {
         printf("Point size           = %d \n", POINT_SIZE);
         printf("FFT/nIFFT            = %d \n", FFT_NIFFT);
         printf("Final scaling Shift  = %d \n", SHIFT);
-        printf("API_IO               = %d \n", API_IO);
+        printf("API_IO               = %d \n", kWindowAPI);
         printf("Round mode           = %d \n", ROUND_MODE);
         printf("Saturation mode      = %d \n", SAT_MODE);
         printf("Data type            = ");
@@ -74,7 +82,7 @@ class tl_graph : public graph {
         printf("========================\n");
         adf::plio_type aiePlioWidth = AIE_PLIO_WIDTH == 64 ? adf::plio_64_bits : adf::plio_128_bits;
         xf::dsp::aie::fft::vss_1d::AIE_GRAPH<DATA_TYPE, TWIDDLE_TYPE, POINT_SIZE, FFT_NIFFT, SHIFT, API_IO, SSR,
-                                             ROUND_MODE, SAT_MODE, TWIDDLE_MODE>
+                                             ROUND_MODE, SAT_MODE, TWIDDLE_MODE, POINT_SIZE_D1, CASC_LEN, USE_WIDGETS>
             fftGraph;
         for (int i = 0; i < SSR; i++) {
             std::string filenameInFront = QUOTE(FRONT_INPUT_FILE);

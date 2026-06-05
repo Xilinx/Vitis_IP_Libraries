@@ -10,19 +10,19 @@
 VSS FFT/IFFT
 ============
 
-This library element implements a single-channel DIT FFT using both AI Engine tiles and programmable logic to extract higher performance for larger point sizes. The VSS offers two modes of implementing the FFT: Mode 1 and Mode 2. Mode 1 performs more computation on AIE tiles compared to Mode 2. It also allows more fine-tuning on the value of SSR. Mode 2 uses more PL compute resources compared to mode 1. It also user lesser PL memory than Mode 1. The two modes thus offer different trade-offs between performance and resource utilization.
+This library element implements a single-channel DIT FFT using both AI Engine tiles and programmable logic to extract higher performance for larger point sizes. The VSS offers two modes of implementing the FFT: Mode 1 and Mode 2. Mode 1 performs more computation on AIE tiles compared to Mode 2. The two modes mainly differ in the split of the algorithm between resources in AI Engines and Programmable logic. The two modes thus offer different trade-offs between performance and resource utilization.
 
 Entry Point
 ===========
 
-The entry points for the VSS are the ``vss_fft_ifft_pararms.cfg`` and ``vss_fft_ifft_1d.mk`` file present in the L2/include/vss/vss_fft_ifft_1d/ directory in the DSP_IP library. The ``vss_fft_ifft_1d.mk`` takes in a user configurable file, say "vss_fft_ifft_pararms.cfg" as input and generates a .vss object as an output after performing all the intermediate steps like generating the necessary AI Engine graph and PL products and stitching them together. The user can then integrate this .vss object into their larger design. See Vitis documentation on "Vitis Subsystems" for details on how to include a .vss object into your design.
+The entry points for the VSS are the ``vss_fft_ifft_params.cfg`` and ``vss_fft_ifft_1d.mk`` files present in the L2/include/vss/vss_fft_ifft_1d/ directory in the DSP library. The ``vss_fft_ifft_1d.mk`` takes in a user-configurable file, say ``vss_fft_ifft_params.cfg`` as input and generates a .vss object as an output after performing all the intermediate steps like generating the necessary AI Engine graph and PL products and stitching them together. The user can then integrate this .vss object into their larger design. See Vitis documentation on "Vitis Subsystems" for details on how to include a .vss object into your design.
 
 Please edit the parameters in the ``cfg`` file and provide it as input to the ``vss_fft_ifft_1d.mk`` file. An example of how to create a vss and include a .vss object in your design is also provided in L2/examples/vss_fft_ifft_1d/example.mk. It creates a .vss object, links it to a larger system to create an xclbin and runs hardware emulation of the full design.
 
 Device Support
 ==============
 
-The VSS FFT can generate VSS products for AIE, AIE-ML and AIE-MLv2. The VSS is generated for the ``part`` that the user provides in the input cfg file. All features are supported on the two variants with the following differences:
+The VSS FFT can generate VSS products for AIE, AIE-ML and AIE-MLv2. The VSS is generated for the ``part`` that the user provides in the input cfg file. All features are supported on these variants with the following differences:
 
 - ``DATA_TYPE`` and ``TWIDDLE_TYPE``. AIE-ML does not support cfloat type.
 - ``TWIDDLE_TYPE``: AIE supports cint32. AIE-ML does not.
@@ -70,6 +70,12 @@ The complete list of required parameters for the VSS FFT is shown in L2/include/
 +----------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------+
 | [APP_PARAMS] ADD_BACK_TRANSPOSE  | Use to indicate whether to include a data rearrangement block at the output side of the VSS. Refer to design notes for more details.       |
 +----------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------+
+| [APP_PARAMS] POINT_SIZE_D1       | Use for expert mode only. This parameter controls the first dimension of decomposition of the FFT that will be implemented by the first bank of FFTs. The second dimension is inferred as POINT_SIZE/POINT_SIZE_D1. |
++----------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------+
+| [APP_PARAMS] CASC_LEN            | Used to set TP_CASC_LEN described in API reference                                                                                         |
++----------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------+
+| [APP_PARAMS] USE_WIDGETS         | Used to set TP_USE_WIDGETS described in API reference. Applicable for VSS Mode 1 only.                                                                                      |
++----------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------+
 
 
 Design Notes
@@ -80,7 +86,7 @@ Design Notes
 Super Sample Rate
 ------------------
 
-The VSS FFT can be configured for Super Sample Rate operation to achieve higher throughput. The design generates TP_SSR number of input and output ports.
+The VSS FFT can be configured for Super Sample Rate operation to achieve higher throughput. The design generates ``TP_SSR`` number of input and output ports.
 
 The input data to the SSR input ports of the VSS FFT are expected to be distributed evenly in a "card-dealing" fashion. For example,
 
@@ -98,7 +104,7 @@ If the point size is a multiple of SSR, then the inputs can be passed as is to t
 
 .. _ADD_FRONT_TRANSPOSE:
 
-VSS Mode 1 creates a transpose block at its input that is used to rearrange data that arrives in the natural SSR order described in :ref:`VSS_SSR_OPERATION` into an order needed by the first set of compute units within the VSS. This block uses buffers in the PL to rearrange the data. If the user wants to input data directly in the form needed by the compute units, they can save on memory resources by setting the ADD_FRONT_TRANSPOSE flag to 0.
+VSS Mode 1 creates a transpose block at its input that is used to rearrange data that arrives in the natural SSR order described in :ref:`DSP_VSS_SSR_OPERATION` into an order needed by the first set of compute units within the VSS. This block uses buffers in the PL to rearrange the data. If the user wants to input data directly in the form needed by the compute units, they can save on memory resources by setting the ADD_FRONT_TRANSPOSE flag to 0.
 If the front transpose is removed, ensure that the data arriving in each port satisfies the formula:
 
 .. math::
@@ -134,7 +140,7 @@ If the front transpose is removed, ensure that the data arriving in each port sa
 
 .. _ADD_BACK_TRANSPOSE:
 
-Both VSS Mode 1 and 2 Include a transpose block after all their compute units to rearrange data in a form in the SSR form as described in section :ref:`VSS_SSR_OPERATION`. This block uses buffers in the PL to rearrange the data. If the user has downstream blocks that can directly accept the data in the form given out by the compute units, they can save on memory resources by setting the ADD_BACK_TRANSPOSE flag to 0.
+Both VSS Mode 1 and 2 Include a transpose block after all their compute units to rearrange data in a form in the SSR form as described in section :ref:`DSP_VSS_SSR_OPERATION`. This block uses buffers in the PL to rearrange the data. If the user has downstream blocks that can directly accept the data in the form given out by the compute units, they can save on memory resources by setting the ADD_BACK_TRANSPOSE flag to 0.
 If the back transpose is removed, data arriving in each output port will be different between the 2 VSS modes for the same SSR and point size.
 
 **VSS Mode 1 Output Formula**
@@ -168,3 +174,6 @@ For VSS Mode 2, the samples at the output of the VSS without the back transpose 
 * ``PORT_IDX`` ranges from **0** to **SSR - 1**
 * ``D1 = point\_size ÷ SSR``
 
+Configuration Notes
+===================
+Once you configure your params.cfg, please run the meta_check target on the VSS generator Makefile to ensure that the configuration is valid. An example of this is available in the L2/examples/vss_fft_ifft_1d/example.mk file.

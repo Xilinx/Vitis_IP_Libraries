@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2019-2022, Xilinx, Inc.
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# this generates the VSS config file based on paramters
 import argparse
 
 parser = argparse.ArgumentParser(
-    description="Python script that produces cfg file based on the configuration parameters",
+    description="Python script that produces cfg file based on the configuration parameters. Used by VSS Mode 1 when the AI Engine does not have its own buffer descriptors, so it does needs the PL transpose kernels to manage the data movement.",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 )
 parser.add_argument(
@@ -27,30 +26,38 @@ parser.add_argument(
 parser.add_argument("-s", "--ssr", type=int, help="parallelisation factor")
 parser.add_argument("-u", "--vss_unit", type=str, help="name of VSS unit")
 parser.add_argument("-q", "--freqhz", type=str, help="frequency of PL kernels")
-parser.add_argument("-dt", "--data_type", default="cint16", type=str, help="data type")
-parser.add_argument("-vm", "--vss_mode", default=1, type=int, help="VSS mode")
-parser.add_argument("-pt", "--point_size", default=1024, type=int, help="Point size")
-
+parser.add_argument("-l", "--aie_obj_name", type=str, help="Unused for this configuration")
+parser.add_argument(
+    "-aie",
+    "--aie_variant",
+    type=int,
+    help="AIE variant",
+)
+parser.add_argument(
+    "-ds",
+    "--dual_streams",
+    type=int,
+    help="Set to 1 to generate config for dual stream AIE implementation",
+    default=0,
+)
 args = parser.parse_args()
 SSR = args.ssr
 fname = args.cfg_file_name
 vssName = args.vss_unit
 freq = args.freqhz
-data_type = args.data_type
-vss_mode = args.vss_mode
-point_size = args.point_size
+aieVariant = args.aie_variant
+
+if aieVariant == 1:
+    lpddrName = "LPDDR"
+elif aieVariant == 2:
+    lpddrName = "LPDDR2"
+elif aieVariant == 22:
+    lpddrName = "LPDDR01"
 
 f = open(f"{fname}", "w")
 
-if data_type == "cint16" and point_size < 65536:
-    common_begin_cfg = f"""
-freqhz={freq}:{vssName}_transpose.ap_clk,mm2s.ap_clk,s2mm.ap_clk
-"""
-else:
-    common_begin_cfg = f"""
+common_begin_cfg = f"""
 freqhz={freq}:{vssName}_front_transpose.ap_clk,{vssName}_transpose.ap_clk,{vssName}_back_transpose.ap_clk,mm2s.ap_clk,s2mm.ap_clk
-"""
-common_begin_cfg += f"""
 
 [connectivity]
 # ------------------------------------------------------------
@@ -62,7 +69,7 @@ nk = mm2s_wrapper:1:mm2s
 nk = s2mm_wrapper:1:s2mm
 
 
-sp=mm2s.mem:LPDDR
+sp=mm2s.mem:{lpddrName}
 
 # ------------------------------------------------------------
 # AXI Stream Connections (PL to AIE)
@@ -116,7 +123,7 @@ else:
 
 
 closing_text = f"""
-sp=s2mm.mem:LPDDR
+sp=s2mm.mem:{lpddrName}
 
 # ------------------------------------------------------------
 # Vivado PAR

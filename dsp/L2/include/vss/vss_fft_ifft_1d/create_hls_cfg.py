@@ -13,42 +13,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 import sys
 import configparser
 import string
 
-def fn_point_size_d1(cur_point_size):
-    if cur_point_size == 65536:
-        return 256
-    elif cur_point_size == 32768:
-        return 256
-    elif cur_point_size == 16384:
-        return 128 
-    elif cur_point_size == 8192:
-        return 128 
-    elif cur_point_size == 4096:
-        return 64 
-    elif cur_point_size == 2048:
-        return 64 
-    elif cur_point_size == 1024:
-        return 32 
-    elif cur_point_size == 512:
-        return 32 
-    elif cur_point_size == 256:
-        return 16 
-    elif cur_point_size == 128:
-        return 16 
-    elif cur_point_size == 64:
-        return 8    
-    else:
-        return 0
-
-
-
 
 def hls_params(cur_dir, root_dir, kernel, params_file, tmpl_file):
     parser = configparser.ConfigParser()
-    with open(f"{cur_dir}/{params_file}") as stream:
+    with open(f"{params_file}") as stream:
         parser.read_string(
             "[top]\n" + stream.read()
         )  # python's configparser complains about headerless configurations in cfg files. This is a trick to get around the issue
@@ -64,11 +37,12 @@ def hls_params(cur_dir, root_dir, kernel, params_file, tmpl_file):
     
     if "mid_transpose" in kernel:
         hls_config_dict["ssr"] = int(int(hls_config_dict["ssr"]) * (128/sample_size)) #128 is size of port in pl kernels
-    if "front" in kernel:
-        hls_config_dict["intlv_dim"] = int(int(hls_config_dict["point_size"])/fn_point_size_d1(int(hls_config_dict["point_size"]))) #128 is size of port in pl kernels
-    if "back" in kernel:
-        hls_config_dict["intlv_dim"] = int((int(hls_config_dict["point_size"])/fn_point_size_d1(int(hls_config_dict["point_size"])))*int(hls_config_dict["ssr"])) #128 is size of port in pl kernels
-
+    if "2" in hls_config_dict["vss_mode"] and "1" in hls_config_dict["api_io"]:
+        if "back_transpose" in kernel:
+            hls_config_dict["point_size"] = int(int(hls_config_dict["point_size"]) // 2)
+        #print("Dual stream configuration selected, doubling SSR for AIE variant 1 with port API and widget use")
+        #hls_config_dict["ssr"] = int(int(hls_config_dict["ssr"]) * 2) #128 is size of port in pl kernels
+    print(hls_config_dict["ssr"])
     kernel_dict = {"ROOT_DIR": str(root_dir), "KERNEL_NAME": str(kernel), "SAMPLE_SIZE": str(sample_size)}
     full_dict = {**kernel_dict, **hls_config_dict}
     print(full_dict)

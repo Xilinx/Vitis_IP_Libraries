@@ -1,5 +1,6 @@
+#
 # Copyright (C) 2019-2022, Xilinx, Inc.
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,12 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# vitis makefile-generator v2.0.10
 #
-#+-------------------------------------------------------------------------------
-# The following parameters are assigned with default values. These parameters can
-# be overridden through the make command line
-#+-------------------------------------------------------------------------------
 
 REPORT := no
 PROFILE := no
@@ -114,7 +110,7 @@ endif # 3
 endif
 XPLATFORM := $(firstword $(XPLATFORM))
 #Get PLATFORM_NAME by PLATFORM
-PLATFORM_NAME = $(strip $(patsubst %.xpfm, % , $(shell basename $(XPLATFORM))))
+PLATFORM_NAME := $(if $(XPLATFORM),$(strip $(patsubst %.xpfm, %, $(notdir $(XPLATFORM)))))
 
 define MSG_PLATFORM
 No platform matched pattern '$(PLATFORM)'.
@@ -122,6 +118,18 @@ Available platforms are: $(XPLATFORMS)
 To add more platform directories, set the PLATFORM_REPO_PATHS variable or point PLATFORM variable to the full path of platform .xpfm file.
 endef
 export MSG_PLATFORM
+
+define CONFIG_GEN_PY
+import os, string
+import sys
+tmpl_file = sys.argv[1]
+out_file = sys.argv[2]
+with open(tmpl_file, 'r') as fr:
+    t = fr.read()
+with open(out_file, 'w') as f:
+    f.write(string.Template(t).safe_substitute(**os.environ))
+endef
+export CONFIG_GEN_PY
 
 .PHONY: check_platform
 check_platform:
@@ -337,5 +345,5 @@ MV = mv -f
 CP = cp -rf
 ECHO:= @echo
 PYTHON3 ?= python3
-TAPYTHON = $(shell find $(XILINX_VITIS)/tps/lnx64/ -maxdepth 1 -type d -name "python-3*" | head -n 1)
+TAPYTHON = $(shell find $(XILINX_VITIS)/tps/lnx64/ -maxdepth 1 -type d -name "python-3*" -exec test -f '{}/bin/python3' \; -print | head -n 1)
 VITIS_PYTHON3 = LD_LIBRARY_PATH=$(TAPYTHON)/lib $(TAPYTHON)/bin/python3

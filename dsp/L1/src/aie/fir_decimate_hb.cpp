@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2019-2022, Xilinx, Inc.
- * Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+ * Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,6 @@ Coding conventions
 #include "aie_api/aie_adf.hpp"
 
 #ifdef __X86SIM__
-// #define _DSPLIB_FIR_DECIMATE_HB_HPP_DEBUG_
-// #define _DSPLIB_FIR_SR_SYM_DEBUG_
 #endif
 
 #include "kernel_api_utils.hpp"
@@ -319,11 +317,16 @@ INLINE_DECL void kernelFilterClass<TT_DATA,
     inItr += m_kDataWindowOffset; // move input data pointer past the margin padding
     yinItr += m_kySpliceStart;    // Fast forward to 128b boundary containing first Y data
 
+    TT_COEFF* m_internalTapsCopy = (TT_COEFF*)
+        m_internalTaps; // avoid compiler thinking m_phaseOneTaps is const and reloading from memory each time. This is
+                        // a pointer to the same memory, just with different type and no const qualifier.
+
     for (int i = 0; i < m_kLsize / m_kPasses; i++)
         chess_prepare_for_pipelining chess_loop_range(m_kLsize / m_kPasses, ) {
 #pragma unroll(m_kPasses)
             for (int pass = 0; pass < m_kPasses; ++pass) {
-                coeff = (T_buff_256b<TT_COEFF>*)m_internalTaps;
+                m_internalTapsCopy = chess_copy(m_internalTapsCopy);
+                coeff = ((T_buff_256b<TT_COEFF>*)m_internalTapsCopy);
                 coe0 = *coeff;
                 xNumDataLoads = 0;
                 xDataLoaded = 0;
@@ -409,7 +412,8 @@ INLINE_DECL void kernelFilterClass<TT_DATA,
                     coeffstart += m_kColumns;
                     if (op % (m_kCoeffRegVsize / m_kColumns) == 0) {
                         // Load coefficients coe0 register
-                        coeff = ((T_buff_256b<TT_COEFF>*)m_internalTaps + op * m_kColumns / m_kCoeffRegVsize);
+                        // coeff = ((T_buff_256b<TT_COEFF>*) m_internalTaps + op * m_kColumns / m_kCoeffRegVsize);
+                        coeff = ((T_buff_256b<TT_COEFF>*)m_internalTapsCopy) + (op * m_kColumns / m_kCoeffRegVsize);
                         coe0 = *coeff;
                     }
                     if ((op >= m_kNumOps - 1) && (m_kCtPresent == 1)) {
@@ -2528,8 +2532,8 @@ void fir_decimate_hb<TT_DATA,
     outInterface.broadcastWindow = (output_async_buffer<TT_DATA>*)&broadcastWindow;
     this->filterKernelRtp(inInterface, outInterface);
 };
-}
-}
-}
-}
-}
+} // namespace decimate_hb
+} // namespace fir
+} // namespace aie
+} // namespace dsp
+} // namespace xf

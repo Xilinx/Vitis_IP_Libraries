@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2019-2022, Xilinx, Inc.
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# this generates the VSS config file based on paramters
 import argparse
 
 parser = argparse.ArgumentParser(
@@ -27,17 +26,63 @@ parser.add_argument(
 parser.add_argument("-s", "--ssr", type=int, help="parallelisation factor")
 parser.add_argument("-u", "--vss_unit", type=str, help="name of VSS unit")
 parser.add_argument("-q", "--freqhz", type=str, help="frequency of PL kernels")
+parser.add_argument("-d", "--data_type", type=str, help="data type for the VSS")
+parser.add_argument(
+    "-l",
+    "--aie_obj_name",
+    type=str,
+    help="Name of the AIE object. Found in the input cfg file.",
+)
+parser.add_argument(
+    "-aie",
+    "--aie_variant",
+    type=int,
+    help="AIE variant",
+)
+parser.add_argument(
+    "-ds",
+    "--dual_streams",
+    type=int,
+    help="Set to 1 to generate config for dual stream AIE implementation",
+    default=0,
+)
 args = parser.parse_args()
 SSR = args.ssr
 fname = args.cfg_file_name
 vssName = args.vss_unit
 freq = args.freqhz
+dataType = args.data_type
+aieName = args.aie_obj_name
+aieVariant = args.aie_variant
+dualStreams = args.dual_streams
+
+if aieVariant == 1:
+    lpddrName = "LPDDR"
+elif aieVariant == 2:
+    lpddrName = "LPDDR2"
+elif aieVariant == 22:
+    lpddrName = "LPDDR01"
 
 f = open(f"{fname}", "w")
 
-common_begin_cfg = f"""
-freqhz={freq}:{vssName}_back_transpose.ap_clk,{vssName}_ssr_fft.ap_clk,mm2s.ap_clk,s2mm.ap_clk
 
+if dualStreams == 1 and dataType != "cint16":
+    common_begin_cfg = f"""
+freqhz={freq}:{vssName}_back_transpose_1.ap_clk,{vssName}_back_transpose_2.ap_clk,{vssName}_ssr_fft_wrapper_1.ap_clk,{vssName}_ssr_fft_wrapper_2.ap_clk,{vssName}_ssr_fft_wrapper_3.ap_clk,{vssName}_ssr_fft_wrapper_4.ap_clk,mm2s.ap_clk,s2mm.ap_clk,{vssName}_joiner_1.ap_clk,{vssName}_splitter_1.ap_clk,{vssName}_joiner_2.ap_clk,{vssName}_splitter_2.ap_clk
+"""
+elif dualStreams == 0 and dataType != "cint16":
+    common_begin_cfg = f"""
+freqhz={freq}:{vssName}_back_transpose.ap_clk,{vssName}_ssr_fft_wrapper_1.ap_clk,{vssName}_ssr_fft_wrapper_2.ap_clk,mm2s.ap_clk,s2mm.ap_clk,{vssName}_joiner.ap_clk,{vssName}_splitter.ap_clk
+"""
+elif dataType == "cint16" and dualStreams == 0:
+    common_begin_cfg = f"""
+freqhz={freq}:{vssName}_back_transpose.ap_clk,{vssName}_ssr_fft_wrapper_1.ap_clk,{vssName}_ssr_fft_wrapper_2.ap_clk,{vssName}_ssr_fft_wrapper_3.ap_clk,{vssName}_ssr_fft_wrapper_4.ap_clk,mm2s.ap_clk,s2mm.ap_clk,{vssName}_joiner.ap_clk,{vssName}_splitter.ap_clk
+"""
+else:
+    common_begin_cfg = f"""
+freqhz={freq}:{vssName}_back_transpose_1.ap_clk,{vssName}_back_transpose_2.ap_clk,{vssName}_ssr_fft_wrapper_1.ap_clk,{vssName}_ssr_fft_wrapper_2.ap_clk,{vssName}_ssr_fft_wrapper_3.ap_clk,{vssName}_ssr_fft_wrapper_4.ap_clk,{vssName}_ssr_fft_wrapper_5.ap_clk,{vssName}_ssr_fft_wrapper_6.ap_clk,{vssName}_ssr_fft_wrapper_7.ap_clk,{vssName}_ssr_fft_wrapper_8.ap_clk,mm2s.ap_clk,s2mm.ap_clk,{vssName}_joiner_1.ap_clk,{vssName}_splitter_1.ap_clk,{vssName}_joiner_2.ap_clk,{vssName}_splitter_2.ap_clk
+"""
+common_begin_cfg += f"""
 [connectivity]
 # ------------------------------------------------------------
 # HLS PL Kernels:
@@ -48,7 +93,7 @@ nk = mm2s_wrapper:1:mm2s
 nk = s2mm_wrapper:1:s2mm
 
 
-sp=mm2s.mem:LPDDR
+sp=mm2s.mem:{lpddrName}
 
 # ------------------------------------------------------------
 # AXI Stream Connections (PL to AIE)
@@ -63,18 +108,17 @@ f.write(common_begin_cfg)
 
 comment = "# connect mm2s\n"
 f.write(comment)
-if SSR == 1:
-    text = "sc = mm2s.sig_o:" + "ai_engine_0.fft_aie_PLIO_front_in_0" + "\n"
+if dualStreams == 1:
+    for i in range(SSR):
+        text = f"sc = mm2s.sig_o_{i}:ai_engine_0.{aieName}_PLIO_front_in_{i}\n"
+        f.write(text)
+elif SSR == 1:
+    text = f"sc = mm2s.sig_o:ai_engine_0.{aieName}_PLIO_front_in_0\n"
     f.write(text)
 else:
     for i in range(SSR):
-        text = (
-            "sc = mm2s.sig_o_"
-            + str(i)
-            + ":"
-            + "ai_engine_0.fft_aie_PLIO_front_in_"
-            + str(i)
-            + "\n"
+        text =(
+            f"sc = mm2s.sig_o_{i}:ai_engine_0.{aieName}_PLIO_front_in_{i}\n"
         )
         f.write(text)
 
@@ -82,25 +126,27 @@ else:
 comment = "# connect s2mm\n"
 f.write(comment)
 
-if SSR == 1:
-    text = "sc = " + str(vssName) + "_back_transpose.sig_o" + ":s2mm.sig_i" + "\n"
+if dualStreams == 1:
+    for i in range(int(SSR / 2)):
+        s2mm_idx_1 = (i // 2) * 4 + (i % 2)
+        text = f"sc = {vssName}_back_transpose_1.sig_o_{i}:s2mm.sig_i_{s2mm_idx_1}\n"
+        f.write(text)
+    for i in range(int(SSR / 2)):
+        s2mm_idx_2 = (i // 2) * 4 + 2 + (i % 2)
+        text = f"sc = {vssName}_back_transpose_2.sig_o_{i}:s2mm.sig_i_{s2mm_idx_2}\n"
+        f.write(text)
+elif SSR == 1:
+    text = f"sc = {vssName}_back_transpose.sig_o:s2mm.sig_i\n"
     f.write(text)
 else:
     for i in range(SSR):
         text = (
-            "sc = "
-            + str(vssName)
-            + "_back_transpose.sig_o_"
-            + str(i)
-            + ":s2mm.sig_i_"
-            + str(i)
-            + "\n"
+            f"sc = {vssName}_back_transpose.sig_o_{i}:s2mm.sig_i_{i}\n"
         )
         f.write(text)
 
-
 closing_text = f"""
-sp=s2mm.mem:LPDDR
+sp=s2mm.mem:{lpddrName}
 
 # ------------------------------------------------------------
 # Vivado PAR

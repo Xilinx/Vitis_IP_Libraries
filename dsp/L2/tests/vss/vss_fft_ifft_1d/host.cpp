@@ -30,44 +30,15 @@
 #include <experimental/xrt_graph.h>
 #include <experimental/xrt_ip.h>
 
+#include "common.hpp"
+#include "vss_fft_ifft_1d_common.hpp"
+
 #define Q(x) #x
 #define QUOTE(x) Q(x)
 
-template <unsigned int TP_POINT_SIZE>
-static constexpr unsigned int fnPtSizeD1() {
-    unsigned int sqrtVal =
-        TP_POINT_SIZE == 65536
-            ? 256
-            : TP_POINT_SIZE == 32768
-                  ? 256
-                  : TP_POINT_SIZE == 16384
-                        ? 128
-                        : TP_POINT_SIZE == 8192
-                              ? 128
-                              : TP_POINT_SIZE == 4096
-                                    ? 64
-                                    : TP_POINT_SIZE == 2048
-                                          ? 64
-                                          : TP_POINT_SIZE == 1024
-                                                ? 32
-                                                : TP_POINT_SIZE == 512
-                                                      ? 32
-                                                      : TP_POINT_SIZE == 256
-                                                            ? 16
-                                                            : TP_POINT_SIZE == 128
-                                                                  ? 16
-                                                                  : TP_POINT_SIZE == 64
-                                                                        ? 8
-                                                                        : TP_POINT_SIZE == 32
-                                                                              ? 8
-                                                                              : TP_POINT_SIZE == 16 ? 4 : 0;
-    return sqrtVal;
-}
-
-template <unsigned int num, unsigned int rnd>
-constexpr unsigned int fnCeil() {
-    return (((num + rnd - 1) / rnd) * rnd);
-}
+#ifndef API_IO
+#define API_IO 0
+#endif
 
 static const char* STR_ERROR = "ERROR:   ";
 static const char* STR_PASSED = "PASSED:  ";
@@ -78,15 +49,19 @@ static const char* STR_INFO = "INFO:    ";
 // DDR Parameters
 // ------------------------------------------------------------
 
+using namespace xf::dsp::vss::common;
+
 static constexpr int32_t NUM_ITER = -1; // Let the graph run and have s2mm terminate things
 static constexpr int32_t LOOP_CNT = NITER;
 static constexpr int32_t LOOP_SEL = 0; // ID of loop to capture by DDR SNK PL HLS block
-static constexpr unsigned NSTREAM = SSR;
+static constexpr unsigned kNumPorts = API_IO ? 2 : 1;
+static constexpr unsigned NSTREAM = SSR * kNumPorts;
 static constexpr unsigned DATAWIDTH = 128;
 static constexpr unsigned sizeOfData = QUOTE(TT_DATA) == "cint16" ? 4 : 8; // size in bytes
 static constexpr unsigned samplesPerRead = 128 / (sizeOfData * 8);
 
-static constexpr unsigned ptSizeD1 = fnPtSizeD1<POINT_SIZE>();
+static constexpr unsigned ptSizeD1 =
+    (POINT_SIZE_D1 == 1) ? fnPtSizeD1<POINT_SIZE, modeAIEffts, NSTREAM>() : POINT_SIZE_D1;
 static constexpr unsigned ptSizeD1Ceil = fnCeil<ptSizeD1, NSTREAM>();
 static constexpr unsigned ptSizeD2 = POINT_SIZE / ptSizeD1;
 static constexpr unsigned ptSizeD2Ceil = fnCeil<ptSizeD2, NSTREAM>();
@@ -94,13 +69,17 @@ static constexpr unsigned int DEPTH = ptSizeD2Ceil * ptSizeD1Ceil;
 
 static constexpr unsigned DDR_WORD_DEPTH_I = ptSizeD2Ceil * ptSizeD1;
 static constexpr unsigned DDR_WORD_DEPTH_O = ptSizeD2Ceil * ptSizeD1;
-static constexpr unsigned NUM_SAMPLES_I = 2 * DDR_WORD_DEPTH_I; // 2 x 32-bit (int32) words for cint32 I/O
-static constexpr unsigned NUM_SAMPLES_O = 2 * DDR_WORD_DEPTH_O; // 2 x 32-bit (int32) words for cint32 I/O
+static constexpr unsigned NUM_SAMPLES_I =
+    2 * DDR_WORD_DEPTH_I; // TODO Cleanup the factor of 2 needed to specify real+imag
+static constexpr unsigned NUM_SAMPLES_O = 2 * DDR_WORD_DEPTH_O; //
 
 static constexpr unsigned DDR_BUFFSIZE_I_BYTES =
     NITER * NUM_SAMPLES_I * (sizeOfData / 2); // Each real/imag sample is 4 bytes 2*4096*4
 static constexpr unsigned DDR_BUFFSIZE_O_BYTES =
     NITER * NUM_SAMPLES_O * (sizeOfData / 2); // Each real/imag sample is 4 bytes
+
+static constexpr unsigned TOT_NUM_BYTES_PER_LANE = DDR_BUFFSIZE_O_BYTES / NSTREAM;
+static constexpr unsigned ITER_NUM_BYTES_PER_LANE = TOT_NUM_BYTES_PER_LANE / NITER;
 
 // ------------------------------------------------------------
 // Main
@@ -122,8 +101,8 @@ int main(int argc, char* argv[]) {
     auto xclbin_uuid = my_device.load_xclbin(xclbinFilename);
     std::cout << STR_PASSED << "auto xclbin_uuid = my_device.load_xclbin(" << xclbinFilename << ")" << std::endl;
 
-    auto my_graph = xrt::graph(my_device, xclbin_uuid, "fft_tb");
-    std::cout << STR_PASSED << "auto my_graph  = xrt::graph(my_device, xclbin_uuid, \"fft_tb\")" << std::endl;
+    auto my_graph = xrt::graph(my_device, xclbin_uuid, "fft_aie_fft_tb");
+    std::cout << STR_PASSED << "auto my_graph  = xrt::graph(my_device, xclbin_uuid, \"fft_aie_fft_tb\")" << std::endl;
 
     my_graph.reset();
     std::cout << STR_PASSED << "my_graph.reset()" << std::endl;
@@ -189,7 +168,6 @@ int main(int argc, char* argv[]) {
     }
     ss_i.close();
     std::cout << STR_PASSED << "Successfully read input file input_front.txt" << std::endl;
-
     // ------------------------------------------------------------
     // Load and start PL kernels
     // ------------------------------------------------------------
@@ -208,6 +186,9 @@ int main(int argc, char* argv[]) {
 
     s2mm_run.wait();
     std::cout << STR_PASSED << "s2mm_run.wait()" << std::endl;
+
+    mm2s_run.wait();
+    std::cout << STR_PASSED << "mm2s_run.wait()" << std::endl;
 
     // ------------------------------------------------------------
     // Retrieve Results
@@ -256,7 +237,7 @@ int main(int argc, char* argv[]) {
     }
     ss_a.close();
 
-    std::cout << "Level: " << level << std::endl;
+    std::cout << "Error threshold: " << level << std::endl;
 
     // Done:
     if (flag == 0)

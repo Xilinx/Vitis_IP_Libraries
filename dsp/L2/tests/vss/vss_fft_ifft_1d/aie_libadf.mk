@@ -28,6 +28,6 @@ $(AIE_CONTAINER): pre_build test.cpp uut_config.h $(DSPLIB_ROOT_DIR)/L1/src/aie/
 	$(VPP) -c --mode aie $(AIE_CXXFLAGS) -o $@ $(filter %.s %.c %.cc %.cpp %cxx, $^)
 else
 $(AIE_CONTAINER): pre_build
-	make -f  $(DSPLIB_IP_ROOT_DIR)/L2/include/vss/vss_fft_ifft_1d/vss_fft_ifft_1d.mk libadf AIETARGET=$(TARGET) HELPER_ROOT_DIR=$(DSPLIB_ROOT_DIR) HELPER_CUR_DIR=$(CUR_DIR)
+	make -f  $(XFLIB_DIR)/L2/include/vss/vss_fft_ifft_1d/vss_fft_ifft_1d.mk libadf AIETARGET=$(TARGET) HELPER_ROOT_DIR=$(XFLIB_DIR) HELPER_CUR_DIR=$(CUR_DIR) DSPLIB_ROOT_DIR=$(DSPLIB_ROOT_DIR)
 endif
 endif

@@ -1,5 +1,5 @@
 # Copyright (C) 2019-2022, Xilinx, Inc.
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ help::
 	$(ECHO) "      Command to remove all the generated files."
 	$(ECHO) ""
 
+
 ############################## Setting up Project Variables ##############################
 
 MK_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -59,6 +60,7 @@ BUILD_REPORT_DIR := $(CUR_DIR)/reports/_build.$(TARGET).$(PLATFORM_NAME)
 
 include $(XFLIB_DIR)/L2/tests/aie/common/scripts/params.mk
 
+
 RUN_DEPS :=
 
 # aie template
@@ -69,6 +71,7 @@ AIE_WORK_DIR ?= Work
 AIE_PKG_DIR ?= Work
 
 # Setting customized_params in aiecompiler
+
 
 ifneq (,$(shell echo $(XPLATFORM) | awk '/vck190/'))
             
@@ -81,6 +84,7 @@ UUT_KERNEL ?= fir_tdm
 REF_KERNEL ?= fir_tdm_ref
 UUT_GRAPH ?= fir_tdm_graph
 REF_GRAPH ?= fir_tdm_ref_graph
+DSP_DIR ?= $(if $(wildcard ../dsp),../dsp,../../Vitis_Libraries/dsp)
 LOC_OUTPUT_FILE_X86 ?= ./x86simulator_output/data/uut_output.txt
 REF_LOC_OUTPUT_FILE_X86 ?= ./x86simulator_output/data/ref_output.txt
 LOC_OUTPUT_FILE_HW ?= ./aiesimulator_output/data/uut_output.txt
@@ -105,6 +109,7 @@ UUT_KERNEL ?= fir_tdm
 REF_KERNEL ?= fir_tdm_ref
 UUT_GRAPH ?= fir_tdm_graph
 REF_GRAPH ?= fir_tdm_ref_graph
+DSP_DIR ?= $(if $(wildcard ../dsp),../dsp,../../Vitis_Libraries/dsp)
 LOC_OUTPUT_FILE_X86 ?= ./x86simulator_output/data/uut_output.txt
 REF_LOC_OUTPUT_FILE_X86 ?= ./x86simulator_output/data/ref_output.txt
 LOC_OUTPUT_FILE_HW ?= ./aiesimulator_output/data/uut_output.txt
@@ -129,6 +134,7 @@ UUT_KERNEL ?= fir_tdm
 REF_KERNEL ?= fir_tdm_ref
 UUT_GRAPH ?= fir_tdm_graph
 REF_GRAPH ?= fir_tdm_ref_graph
+DSP_DIR ?= $(if $(wildcard ../dsp),../dsp,../../Vitis_Libraries/dsp)
 LOC_OUTPUT_FILE_X86 ?= ./x86simulator_output/data/uut_output.txt
 REF_LOC_OUTPUT_FILE_X86 ?= ./x86simulator_output/data/ref_output.txt
 LOC_OUTPUT_FILE_HW ?= ./aiesimulator_output/data/uut_output.txt
@@ -153,6 +159,7 @@ UUT_KERNEL ?= fir_tdm
 REF_KERNEL ?= fir_tdm_ref
 UUT_GRAPH ?= fir_tdm_graph
 REF_GRAPH ?= fir_tdm_ref_graph
+DSP_DIR ?= $(if $(wildcard ../dsp),../dsp,../../Vitis_Libraries/dsp)
 LOC_OUTPUT_FILE_X86 ?= ./x86simulator_output/data/uut_output.txt
 REF_LOC_OUTPUT_FILE_X86 ?= ./x86simulator_output/data/ref_output.txt
 LOC_OUTPUT_FILE_HW ?= ./aiesimulator_output/data/uut_output.txt
@@ -173,6 +180,7 @@ UUT_KERNEL ?= fir_tdm
 REF_KERNEL ?= fir_tdm_ref
 UUT_GRAPH ?= fir_tdm_graph
 REF_GRAPH ?= fir_tdm_ref_graph
+DSP_DIR ?= $(if $(wildcard ../dsp),../dsp,../../Vitis_Libraries/dsp)
 LOC_OUTPUT_FILE_X86 ?= ./x86simulator_output/data/uut_output.txt
 REF_LOC_OUTPUT_FILE_X86 ?= ./x86simulator_output/data/ref_output.txt
 LOC_OUTPUT_FILE_HW ?= ./aiesimulator_output/data/uut_output.txt
@@ -195,6 +203,8 @@ else
 AIETARGET := x86sim
 endif
 
+
+
 ifeq (,$(PLATFORM)) 
 AIE_CXXFLAGS += --part=$(XPLATFORM)
 else
@@ -206,6 +216,8 @@ AIE_CXXFLAGS += $(AIE_CXXFLAGS_INC)
 AIE_CONTAINER = $(TEMP_DIR)/libadf.a
 AIE_WORK_DIR = $(CUR_DIR)/Work
 AIE_PKG_DIR = $(AIE_WORK_DIR)
+
+
 
 ifneq (,$(shell echo $(XPLATFORM) | awk '/vck190/'))
         
@@ -235,11 +247,15 @@ endif
 
 AIESIMFLAGS += $(EXTRA_AIESIMFLAGS)
 
+
+
 ############################## Setting Rules for AIE (Building Kernels) ##################
 $(AIE_CONTAINER): pre_build test.cpp $(XFLIB_DIR)/L1/src/aie/fir_tdm.cpp uut_config.h 
 	$(ECHO) "Compiling: libadf.a"
 	mkdir -p $(dir $@)
 	$(VPP) -c --mode aie $(AIE_CXXFLAGS) -o $@ $(filter %.s %.c %.cc %.cpp %cxx, $^)
+
+
 
 ############################## Setting Essential Checks and Building Rules ##############################
 ifneq (,$(filter x86sim aiesim, $(TARGET)))
@@ -279,14 +295,14 @@ ifeq ($(TARGET), aiesim)
 	tclsh $(XFLIB_DIR)/L2/tests/aie/common/scripts/diff_exit.tcl ./
 endif
 
+
 ############################## Setting Targets ##############################
 .PHONY: pre_build
 pre_build:
 	 mkdir -p logs
 	$(if $(filter-out REF,$(TAG)), $(VITIS_PYTHON3) $(XFLIB_DIR)/L2/tests/aie/common/scripts/paramenv.py --parameter_file $(PARAMS_FILE) --instance_name $(PARAMS) --command "make -f $(XFLIB_DIR)/L2/tests/aie/common/scripts/fir_helper.mk get_status HELPER_CUR_DIR=$(CUR_DIR) HELPER_ROOT_DIR=$(XFLIB_DIR) UUT_KERNEL=$(UUT_KERNEL)")
 	$(if $(filter-out REF,$(TAG)), $(VITIS_PYTHON3) $(XFLIB_DIR)/L2/tests/aie/common/scripts/paramenv.py --parameter_file $(PARAMS_FILE) --instance_name $(PARAMS) --command "tclsh $(XFLIB_DIR)/L2/tests/aie/common/scripts/get_common_config_json.tcl ./config.json ./ $(UUT_KERNEL)"  --connector " " --var "DATA_TYPE:DATA_OUT_TYPE:COEFF_TYPE:FIR_LEN:SHIFT:ROUND_MODE:INPUT_WINDOW_VSIZE:TDM_CHANNELS:CASC_LEN:NUM_OUTPUTS:PORT_API:DUAL_IP:UUT_SSR:SAT_MODE:AIE_VARIANT:USE_COEFF_RELOAD")
-	$(if $(filter-out REF,$(TAG)), $(VITIS_PYTHON3) $(XFLIB_DIR)/L2/meta/scripts/metadata_checker.py --ip $(UUT_KERNEL))
-	$(if $(filter-out REF,$(TAG)), # vitis --classic -exec ipmetadata_config_checker $(XFLIB_DIR)/L2/meta/$(UUT_KERNEL).json ./config.json -newflow)
+	$(if $(filter-out REF,$(TAG)), $(VITIS_PYTHON3) $(XFLIB_DIR)/$(DSP_DIR)/L2/meta/scripts/metadata_checker.py --ip $(UUT_KERNEL) --lib_dir $(XFLIB_DIR))
 	$(if $(filter-out REF,$(TAG)), $(VITIS_PYTHON3) $(XFLIB_DIR)/L2/tests/aie/common/scripts/paramenv.py --parameter_file $(PARAMS_FILE) --instance_name $(PARAMS) --command "make -f $(XFLIB_DIR)/L2/tests/aie/common/scripts/fir_helper.mk gen_input HELPER_CUR_DIR=$(CUR_DIR) HELPER_ROOT_DIR=$(XFLIB_DIR) INPUT_FILE=$(LOC_INPUT_FILE)")
 	$(if $(filter-out REF,$(TAG)), $(VITIS_PYTHON3) $(XFLIB_DIR)/L2/tests/aie/common/scripts/paramenv.py --parameter_file $(PARAMS_FILE) --instance_name $(PARAMS) --command "make -f $(XFLIB_DIR)/L2/tests/aie/common/scripts/fir_helper.mk ssr_split HELPER_CUR_DIR=$(CUR_DIR) HELPER_ROOT_DIR=$(XFLIB_DIR) SPLIT_ZIP_FILE=$(LOC_INPUT_FILE) TAG=$(TAG)")
 	$(if $(filter REF,$(TAG)), cp $(LOC_INPUT_FILE)  $(REF_INPUT_FILE))
@@ -307,6 +323,7 @@ uut_config.h: $(XFLIB_DIR)/L2/tests/aie/common/scripts/tb_gen.py
 valid_params:
 
 gen_instances: $(GENERATED_FILES)
+
 
 ############################## Cleaning Rules ##############################
 clean:

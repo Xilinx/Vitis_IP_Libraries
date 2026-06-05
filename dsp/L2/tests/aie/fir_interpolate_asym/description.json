@@ -134,10 +134,7 @@
             "build_cmd": "$(if $(filter-out REF,$(TAG)), $(VITIS_PYTHON3) LIB_DIR/L2/tests/aie/common/scripts/paramenv.py --parameter_file $(PARAMS_FILE) --instance_name $(PARAMS) --command \"tclsh LIB_DIR/L2/tests/aie/common/scripts/get_common_config_json.tcl ./config.json ./ $(UUT_KERNEL)\"  --connector \" \" --var \"DATA_TYPE:COEFF_TYPE:FIR_LEN:SHIFT:ROUND_MODE:INPUT_WINDOW_VSIZE:CASC_LEN:USE_COEFF_RELOAD:NUM_OUTPUTS:PORT_API:DUAL_IP:UUT_SSR:INTERPOLATE_FACTOR:UUT_PARA_INTERP_POLY:AIE_VARIANT:SAT_MODE\")"
         },
         {
-            "build_cmd": "$(if $(filter-out REF,$(TAG)), $(VITIS_PYTHON3) LIB_DIR/L2/meta/scripts/metadata_checker.py --ip $(UUT_KERNEL))"
-        },
-        {
-            "build_cmd": "$(if $(filter-out REF,$(TAG)), # vitis --classic -exec ipmetadata_config_checker LIB_DIR/L2/meta/$(UUT_KERNEL).json ./config.json -newflow)"
+            "build_cmd": "$(if $(filter-out REF,$(TAG)), $(VITIS_PYTHON3) LIB_DIR/$(DSP_DIR)/L2/meta/scripts/metadata_checker.py --ip $(UUT_KERNEL) --lib_dir LIB_DIR)"
         },
         {
             "build_cmd": "$(if $(filter-out REF,$(TAG)), $(VITIS_PYTHON3) LIB_DIR/L2/tests/aie/common/scripts/paramenv.py --parameter_file $(PARAMS_FILE) --instance_name $(PARAMS) --command \"make -f LIB_DIR/L2/tests/aie/common/scripts/fir_helper.mk gen_input HELPER_CUR_DIR=PROJECT HELPER_ROOT_DIR=LIB_DIR INPUT_FILE=$(LOC_INPUT_FILE)\")"
@@ -216,6 +213,7 @@
                     "REF_KERNEL": "fir_interpolate_asym_ref",
                     "UUT_GRAPH": "fir_interpolate_asym_graph",
                     "REF_GRAPH": "fir_interpolate_asym_ref_graph",
+                    "DSP_DIR": "$(if $(wildcard ../dsp),../dsp,../../Vitis_Libraries/dsp)",
                     "SYMMETRY_FACTOR": "2",
                     "DIFF_TOLERANCE": "0",
                     "CC_TOLERANCE": "0",
@@ -277,7 +275,7 @@
                 "cmd": "",
                 "max_memory_MB": {
                     "vitis_aie_x86sim": 8192,
-                    "vitis_aie_sim": 51200
+                    "vitis_aie_sim": 8192
                 },
                 "max_time_min": {
                     "vitis_aie_x86sim": 470,

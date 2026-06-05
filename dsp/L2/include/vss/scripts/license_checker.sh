@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2019-2022, Xilinx, Inc.
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.#
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 #!/bin/bash
 
@@ -22,7 +23,7 @@ TEXT="I have read and accepted the terms and conditions in the disclaimer.txt fi
 
 # Check if the file exists
 if [ ! -f "$FILE" ]; then
-    echo "Error: File '$FILE' not found. Please run the agree_licenses.sh in the L2/include/vss/vss_fft_ifft_1d directory before running the makefile."
+    echo "Agreement File '$FILE' not found. Please agree to the licenses by running the agree_licenses.sh in the L2/include/vss/vss_fft_ifft_1d directory before running the makefile."
     exit 1
 fi
 

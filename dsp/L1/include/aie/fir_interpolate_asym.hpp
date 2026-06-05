@@ -35,6 +35,7 @@ coefficients is therefore reversed during construction to yield conventional FIR
 #include <assert.h>
 #include <array>
 #include <cstdint>
+#include <vector>
 
 #include "fir_utils.hpp"
 #include "fir_interpolate_asym_traits.hpp"
