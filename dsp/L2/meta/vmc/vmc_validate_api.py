@@ -139,12 +139,3 @@ def ProcessVMCConfig(config_file_loc, spec, key_label_map=None):
     temp_dict["err_msg"] = ProcesStrFun(temp_dict["err_msg"], key_label_map)
     return temp_dict
 
-#1-3 for validation config.json
-#config_file_loc="/proj/xhdhdstaff4/mahajan/gradle_HEAD_mahajan/HEAD/xmc_aie_lib/DFT_c6844f4f/config.json"
-#temp_dict=ProcessVMCConfig(config_file_loc,"dft")
-#print(temp_dict)
-
-#generate graph
-#graph_dict=generate_graph_vmc(config_file_loc, "dft", "DFT_c6844f4f")
-#print(graph_dict["port_info"])
-
