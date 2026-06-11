@@ -32,7 +32,7 @@ set_property -dict [list \
 make_bd_intf_pins_external  [get_bd_intf_pins xfft_1/M_AXIS_DATA]
 make_bd_intf_pins_external  [get_bd_intf_pins xfft_1/S_AXIS_DATA]
 make_bd_pins_external  [get_bd_pins xfft_1/aclk]
-generate_target all [get_files /proj/xirhdstaff1/uvimalku/icdes/IP3_uvimalku_cores/DEV/hw/xfft/xfft_v9_1/project_1/project_1.srcs/sources_1/bd/xfft_bd/xfft_bd.bd]
+generate_target all [get_files project_1/project_1.srcs/sources_1/bd/xfft_bd/xfft_bd.bd]
 ipx::package_project -root_dir ip_repo -vendor user.org -library user -taxonomy /UserIP -module xfft_bd -import_files
 set_property ipi_drc {ignore_freq_hz false} [ipx::current_core]
 set_property sdx_kernel true [ipx::current_core]

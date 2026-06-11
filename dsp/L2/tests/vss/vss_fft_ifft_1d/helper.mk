@@ -20,7 +20,7 @@
 ###############################################################################
 
 HELPER_CUR_DIR ?= .
-HELPER_ROOT_DIR ?= ./../../../../../
+HELPER_ROOT_DIR ?= ${XFLIB_DIR}
 
 TAPYTHON = $(shell find $(XILINX_VITIS)/tps/lnx64/ -maxdepth 1 -type d -name "python-3*" -exec test -f '{}/bin/python3' \; -print | head -n 1)
 VITIS_PYTHON3 = LD_LIBRARY_PATH=$(TAPYTHON)/lib $(TAPYTHON)/bin/python3
@@ -180,7 +180,7 @@ harvest_mem:
 
 PART := $(shell $(VITIS_PYTHON3) ${HELPER_ROOT_DIR}/L2/include/vss/scripts/extract_param_cfg.py ./ "PART" "top" vss_fft_ifft_1d_params.cfg)
 
-AIE_VARIANT := $(shell $(VITIS_PYTHON3) ${HELPER_ROOT_DIR}/L2/meta/vss/scripts/get_aievar_from_part.py ${PART})
+AIE_VARIANT := $(shell $(VITIS_PYTHON3) ${HELPER_ROOT_DIR}/L2/meta/scripts/get_aievar_from_part.py ${PART})
 
 # set default values for parameters non-necessary parameters to maintain backwards compatibility
 ifeq ($(filter -1,$(VSS_MODE)), -1)
