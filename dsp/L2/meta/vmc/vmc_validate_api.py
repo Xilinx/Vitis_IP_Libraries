@@ -138,4 +138,3 @@ def ProcessVMCConfig(config_file_loc, spec, key_label_map=None):
         return temp_dict
     temp_dict["err_msg"] = ProcesStrFun(temp_dict["err_msg"], key_label_map)
     return temp_dict
-

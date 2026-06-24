@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Copyright (C) 2019-2022, Xilinx, Inc.
-# Copyright (C) 2022-2025, Advanced Micro Devices, Inc.
+# Copyright (C) 2022-2026, Advanced Micro Devices, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ if [ $AIE_VARIANT == 1 ]; then
     elif [ $AIE_VARIANT == 2 ]; then
     PART="XCVE2802-VSVH1760-1MP-E-S"
     elif [ $AIE_VARIANT == 22 ]; then
-    PART="xc2ve3858-ssva2112-2LP-e-S"
+    PART="xc2ve3858-ssva2112-2MP-e-S"
 fi
 
 if [ -f "$VCD_DIR" ]; then #does the vcd file exist to run the power tests?

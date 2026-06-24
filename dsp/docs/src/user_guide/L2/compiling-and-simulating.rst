@@ -23,27 +23,28 @@ Library Element Unit Test
 
 Each library element category comes supplied with a test harness.
 
-For AI Engine library elements, it is located in the `L2/tests/aie/<library_element>` directory and consists of JSON, C++ files, as well as a Makefile.
-For VSS library elements, it is located in the `L2/tests/vss/<library_element>` directory and contains a host file, some helper python scripts, along with the JSON, C++ files and Makefiles.
+For AI Engine library elements, the test harness resides in the `L2/tests/aie/<library_element>` directory and consists of JSON and C++ files, and a Makefile.
 
-JSON description of the test harness, defined in `L2/tests/<vss/aie>/<library_element>/description.json`, has been used to generate the Makefile. In addition, the `description.json` file defines the parameters of the test harness, e.g., a list of supported platforms.
+For VSS library elements, the test harness resides in the `L2/tests/vss/<library_element>` directory and contains a host file, helper Python scripts, and the JSON, C++ files, and Makefiles.
 
-Each Makefile uses a set of values for each of the library element parameters that are stored in in a JSON file in `L2/tests/aie/<library_element>/multi_params.json`. The set of parameters are combined in a form of a named test case, with default name being: `test_0_tool_canary_aie`. The set of parameters can be edited as required to configure the library element for your needs.
+The JSON description of the test harness, defined in `L2/tests/<vss/aie>/<library_element>/description.json`, generates the Makefile. The `description.json` file also defines the parameters of the test harness, for example, a list of supported platforms.
 
-C++ files serve as an example of how to use the library element subgraph in the context of a super-graph. These test harnesses (graphs) can be found in the `L2/tests/aie/<library_element>/test.hpp` and `L2/tests/aie/<library_element>/test.cpp` file.
+Each Makefile uses a set of values for each library element parameter, stored in a JSON file at `L2/tests/aie/<library_element>/multi_params.json`. The parameters are combined into a named test case — the default name is `test_0_tool_canary_aie`. Edit the parameters as required to configure the library element for your needs.
 
-Although for AI Engine library elements, it is recommended that only L2 (graphs) library elements are instantiated directly in the user code, the kernels underlying the graphs can be found in the `L1/include/aie/<library_element>.hpp` and the `L1/src/aie/<library_element>.cpp` files.
+C++ files serve as an example of how to use the library element subgraph in the context of a super-graph. These test harnesses (graphs) reside in the `L2/tests/aie/<library_element>/test.hpp` and `L2/tests/aie/<library_element>/test.cpp` files.
 
-For VSS library elements, it is recommended to use the top level VSS Makefile found in `L2/include/vss/<library_element>` as the entry point.
+For AI Engine library elements, instantiate only L2 (graphs) library elements directly in your code. The kernels underlying the graphs reside in the `L1/include/aie/<library_element>.hpp` and `L1/src/aie/<library_element>.cpp` files.
 
-The test harness run consists of several steps that result in a simulated and validated design. These include:
+For VSS library elements, use the top-level VSS Makefile found in `L2/include/vss/<library_element>` as the entry point.
 
-- Input files(s) generation.
-- Validate configuration with metadata (in: `L2/meta`).
-- Reference model compilation and simulation, to produce the `golden output`.
-- Uut design compilation and simulation.
-- Output post-processing (e.g., timestamps processing to produce throughput figures). The output of the reference model ( `logs/ref_output.txt` ) is verified against the output of the AI Engine graphs (`logs/uut_output.txt`).
-- Status generation. On completion of the make, the `logs/status_<config_details>.txt` file will contain the result of compilation, simulation, and an indication of whether the reference model and AI Engine model outputs match. The report will also contain resource utilization and performance metrics.
+The test harness run consists of the following steps:
+
+- Generate input files.
+- Validate configuration with metadata (in `L2/meta`).
+- Compile and simulate the reference model to produce the `golden output`.
+- Compile and simulate the unit under test (UUT) design.
+- Post-process output (for example, process timestamps to produce throughput figures). The reference model output (`logs/ref_output.txt`) is verified against the AI Engine graphs output (`logs/uut_output.txt`).
+- Generate status. On completion, `logs/status_<config_details>.txt` contains the compilation and simulation result, and indicates whether the reference and AI Engine model outputs match. The report also contains resource utilization and performance metrics.
 
 Compiling Using the Makefile
 ----------------------------
@@ -51,20 +52,20 @@ Compiling Using the Makefile
 Running Compilation
 ^^^^^^^^^^^^^^^^^^^
 
-Use the following steps to compile and simulate the reference model with the x86sim target, then to compile and simulate the library element graph as described in the above section.
+Use the following command to compile and simulate the reference model with the x86sim target, then compile and simulate the library element graph:
 
 .. code-block::
 
         make cleanall run PLATFORM=vck190
 
-.. note:: It is recommended to run a ``cleanall`` stage before the compiling design, to ensure no stale objects interfere with the compilation process.
+.. note:: Run a ``cleanall`` stage before compiling the design, to ensure no stale objects interfere with the compilation process.
 
-.. note:: Platform information (e.g., PLATFORM=vck190) is a requirement of a make build process. A list of supported platforms can be found in `L2/tests/aie/<library_element>/description.json` in the "platform_allowlist" section.
+.. note:: Platform information (for example, PLATFORM=vck190) is required by the make build process. Supported platforms are listed in `L2/tests/aie/<library_element>/description.json` under the "platform_allowlist" key.
 
 Configuring the Test Case
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To overwrite the default set of parameter, edit the `multi_params.json` file, and add a dedicated named test case or edit one of the existing ones, e.g.:
+To overwrite the default set of parameters, edit the `multi_params.json` file, and add a dedicated named test case or edit one of the existing ones, for example:
 
 .. code-block::
 
@@ -74,24 +75,24 @@ To overwrite the default set of parameter, edit the `multi_params.json` file, an
         (...)
         }
 
-To run a test case, specify the test case name passed to the PARAMS argument, e.g.:
+To run a test case, specify the test case name passed to the PARAMS argument, for example:
 
 .. code-block::
 
         make cleanall run PLATFORM=vck190 PARAMS=test_my_design
 
-For list of all the configurable parameters, see the :ref:`CONFIGURATION_PARAMETERS`.
+For a list of all configurable parameters, refer to :ref:`CONFIGURATION_PARAMETERS`.
 
 Selecting TARGET
 ^^^^^^^^^^^^^^^^
 
-To perform a x86 compilation/simulation, run:
+To perform an x86 compilation/simulation, run:
 
 .. code-block::
 
     make run TARGET=x86sim.
 
-List of all the Makefile targets:
+The following list describes all Makefile targets:
 
 .. code-block::
 
@@ -113,7 +114,7 @@ List of all the Makefile targets:
             | Run the `sdk.sh` script from the `common-image` directory to install sysroot using the command: ./sdk.sh -y -d ./ -p
             | Unzip the `rootfs` file : gunzip ./rootfs.ext4.gz
             | export SYSROOT=< path-to-platform-sysroot >
-        b. You could also define SYSROOT, K_IMAGE, and ROOTFS by themselves:
+        b. You can also define SYSROOT, K_IMAGE, and ROOTFS individually:
             .. code-block::
 
                 export SYSROOT=< path-to-platform-sysroot >
@@ -126,40 +127,40 @@ Troubleshooting Compilation
 Compilation Arguments
 ^^^^^^^^^^^^^^^^^^^^^
 
-The test harness supplied with the library allows each library unit to be compiled and simulated in isolation. When the library unit is instanced within your design, the compilation result might differ from the result obtained with the test harness. This might be because compilation of your system might need arguments not present in your system.
+The test harness supplied with the library allows each library unit to be compiled and simulated in isolation. When you instantiate the library unit within your design, the compilation result may differ from the test harness result, because your system compilation may require additional arguments.
 
-Search the Makefile provided for UUT_TARGET_COMPILE_ARGS. For each library element, there can be compile arguments used to avoid errors or to improve performance, that is, specifying memories to be on separate banks to avoid wait states. These arguments will likely change with each release as the compile tool changes with each release.
+Search the Makefile for UUT_TARGET_COMPILE_ARGS. Each library element may have compile arguments that avoid errors or improve performance — for example, placing memories on separate banks to avoid wait states. These arguments are likely to change with each release as the compiler evolves.
 
 Stack Size Allocation
 ^^^^^^^^^^^^^^^^^^^^^
 
-Similarly, the test harness provided with each library unit estimates the stack size required for a variety of cases and creates a formula to assign sufficient amount of memory for stack purposes. When the library unit is instanced within your design, compilation can fail with insufficient stack allocated for a specific kernel. The error message should suggest a minimum figure that is required.
+The test harness also estimates the stack size required for a variety of cases and provides a formula to assign enough memory for stack purposes. When you instantiate the library unit within your design, compilation may fail due to insufficient stack for a specific kernel. The error message indicates the minimum stack size required.
 
-Use the compiler argument to allocate enough stack as advised by the compiler message. Alternatively, search the Makefile provided for STACK_SIZE, and use the formula for the library unit to calculate sufficient stack size and allocate accordingly.
+Pass the compiler argument advised by the error message to allocate enough stack. Alternatively, search the Makefile for STACK_SIZE and use the formula provided to calculate and allocate an appropriate stack size.
 
 Invalid Throughput and/or Latency
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Throughput and latency are only reported when a stable operation has been detected. Complex designs might take several iterations to achieve stable state. When a test case is not run for enough iterations, the status report will flag such case with throughput and latency values set to -1.
+Throughput and latency are only reported once stable operation is detected. Complex designs may take several iterations to reach a stable state. When a test case runs for too few iterations, the status report sets throughput and latency values to -1.
 
-Increase the number of iterations the simulation runs for to achieve a stable state and get accurate throughput and latency measurements.
+Increase the number of simulation iterations to reach a stable state and obtain accurate throughput and latency measurements.
 
 Power Analysis
 --------------
 
-For DSPLIB elements, a naming convention 'VCD' can be used to harvest dynamic power consumption. Once 'VCD' string is added within the test name, VCD file of the simulation data is captured and PDM (Power Design Manager) calculates power metrics. User can find detailed power reports in `pwr_test` folder under their corresponding test result directory. Dynamic power result can also be found in the `logs/status_<config_details>.txt` file.
+For DSPLIB elements, add the string `VCD` to the test name to harvest dynamic power consumption. This captures a VCD file of the simulation data, and Power Design Manager (PDM) calculates power metrics. Detailed power reports are in the `pwr_test` folder under the corresponding test result directory. The dynamic power result is also in the `logs/status_<config_details>.txt` file.
 
 .. _CONFIGURATION_PARAMETERS:
 
 Library Element Configuration Parameters
-----------------------------------------
+-----------------------------------------
 
 .. _COMMON_CONFIG_PARAMETERS:
 
 Common Configuration Parameters
--------------------------------
+---------------------------------
 
-Many library elements perform arithmetic and offer a scaling feature exposed as TP_SHIFT. During this operation, rounding and saturation can occur, configured according to parameters TP_RND and TP_SAT. The modes and values for TP_RND are  the same for AIE-ML and AIE-MLv2 devices, but differ from those for AIE devices, as captured in the following table.
+Many library elements perform arithmetic and offer a scaling feature through TP_SHIFT. During this operation, rounding and saturation can occur, controlled by TP_RND and TP_SAT. The modes and values for TP_RND are the same for AIE-ML and AIE-ML v2 devices, but differ from those for AIE devices, as shown in the following table.
 
 .. table:: Common Configuration Parameters
 
@@ -172,7 +173,7 @@ Many library elements perform arithmetic and offer a scaling feature exposed as 
     | ROUND_MODE             |    unsigned    |    0           | Rounding mode.                       |
     |                        |                |                |                                      |
     |                        |                |                +------------------+-------------------+
-    |                        |                |                |     AIE          | AIE-ML or AIE-MLv2|
+    |                        |                |                |     AIE          | AIE-ML or AIE-ML v2|
     |                        |                |                +------------------+-------------------+
     |                        |                |                |                  |                   |
     |                        |                |                | 0 - rnd_floor*   | 0 - rnd_floor*    |
@@ -209,7 +210,8 @@ Many library elements perform arithmetic and offer a scaling feature exposed as 
     +------------------------+----------------+----------------+--------------------------------------+
     | DIFF_TOLERANCE         |    unsigned    |    0           | Tolerance value when comparing       |
     |                        |                |                | output sample with reference model,  |
-    |                        |                |                | e.g. 0.0025 for floats and cfloats.  |
+    |                        |                |                | for example, 0.0025 for floats and   |
+    |                        |                |                | cfloats.                             |
     |                        |                |                |                                      |
     +------------------------+----------------+----------------+--------------------------------------+
     | STIM_TYPE              |    unsigned    |    0           | Supported types:                     |
@@ -242,13 +244,13 @@ Many library elements perform arithmetic and offer a scaling feature exposed as 
     |                        |                |                |                                      |
     |                        |                |                | 2: AIE-ML                            |
     |                        |                |                |                                      |
-    |                        |                |                | 22: AIE-MLv2                         |
+    |                        |                |                | 22: AIE-ML v2                         |
     +------------------------+----------------+----------------+--------------------------------------+
 
 .. _CONFIGURATION_PARAMETERS_FFT:
 
 FFT Configuration Parameters
--------------------------------
+-----------------------------
 
 For the FFT/iFFT library element, use the following list of configurable parameters and default values.
 
@@ -309,12 +311,12 @@ For the FFT/iFFT library element, use the following list of configurable paramet
     |                        |                |                |                                      |
     +------------------------+----------------+----------------+--------------------------------------+
 
-.. note:: Given parameter values are subject to checks early in compilation to ensure support. See :ref:`LEGALITY_CHECKING`
+.. note:: Parameter values are checked early in compilation to ensure support. Refer to :ref:`LEGALITY_CHECKING`.
 
 .. _CONFIGURATION_PARAMETERS_FILTERS:
 
 FIR Configuration Parameters
--------------------------------
+------------------------------
 
 The following list consists of configurable parameters for FIR library elements with their default values.
 
@@ -403,9 +405,9 @@ The following list consists of configurable parameters for FIR library elements 
     |                        |                |                |                                      |
     +------------------------+----------------+----------------+--------------------------------------+
 
-.. note:: Given parameter values are subject to checks early in compilation to ensure support. See :ref:`LEGALITY_CHECKING`
+.. note:: Parameter values are checked early in compilation to ensure support. Refer to :ref:`LEGALITY_CHECKING`.
 
-.. note:: Not all dspiplib elements support all of the above configurable parameters. Unsupported parameters which are not used have no impact on execution, e.g., the `INTERPOLATE_FACTOR` parameter is only supported by interpolation filters and will be ignored by other library elements.
+.. note:: Not all DSPIPLib elements support all configurable parameters. Unsupported parameters have no impact on execution. For example, `INTERPOLATE_FACTOR` is only supported by interpolation filters and is ignored by all other library elements.
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN
    :ltrim:

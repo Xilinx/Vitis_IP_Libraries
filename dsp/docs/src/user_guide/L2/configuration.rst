@@ -7,26 +7,34 @@
 .. _CONFIGURATION:
 
 Configuring the Library Elements
---------------------------------
+---------------------------------
 
-**Prerequisites**:
-    Python bin to be used for config_helper.py:
+**Prerequisites** — add the Python binary for `config_helper.py` to your PATH:
 
 .. code-block::
 
 	setenv PATH "<your-Vitis-install-path>/lin64/2025.1/Vitis/aietools/tps/lnx64/python-3.13.0/bin:$PATH"
 
-DSPLIB IPs can be configured by utilizing a Python script called "config_helper.py". The "config_helper.py" is designed to assist users in establishing a valid configuration for any DSPLIB IP. This script communicates with the user through the console interface.
+Configure DSPLIB IPs using the Python script `config_helper.py`. This script guides you to a valid configuration for any DSPLIB IP through the console interface.
 
-The config helper will print either a legal set or a legal range for a parameter asking the user input a value. If the parameter is set to a legal value, the config helper will move to the next parameter on the parameter list of the chosen IP. If the given value is not legal, config helper will return error and ask the user to choose a legal value from the legal set/range. User can go back to the previous parameter by entering z/Z and return at any time.
+For each parameter, the config helper prints a legal set or range of values and prompts you to enter one.
 
-Once all the parameters are set, the config helper will output a top-level file. For AI Engine IPs, a graph_*ip_name_instance_name*.txt file will be generated. This contains a top-level graph class to instantiate the IP. The user can use the PRINT_GRAPH option to print the graph on the console. For VSS IPs, a cfg_*ip_name_instance_name*.cfg file will be generated. Note that the "PART" parameter in the VSS config_helper is a representation of the device that the VSS generator supports rather than being the exact part name that is supported. Please accept the default part name for the device that you would like to support and extract the other parameters using config_helper. In the output cfg file that the config_helper creates, you can then edit the part name to any other part of the same device type before building the VSS.
-The user can use the .cfg file as the input to the top-level VSS Makefile. If the output top-level file is not needed, the user can call config_helper.py with the NO_INSTANCE argument. 
+- If the value is legal, the config helper moves to the next parameter.
+- If the value is not legal, the config helper returns an error and prompts you to choose from the legal set or range.
+
+To return to the previous parameter at any time, enter ``z`` or ``Z``.
+
+After all parameters are set, the config helper outputs a top-level file:
+
+- **AI Engine IPs**: a `graph_*ip_name_instance_name*.txt` file containing a top-level graph class to instantiate the IP. Use the PRINT_GRAPH option to print the graph to the console.
+- **VSS IPs**: a `cfg_*ip_name_instance_name*.cfg` file. The "PART" parameter represents the device the VSS generator supports, not an exact part name. Accept the default part name for your target device, extract the remaining parameters using config_helper, then edit the part name in the output .cfg file to the specific part before building the VSS.
+
+Pass the .cfg file as input to the top-level VSS Makefile. To skip generating a top-level instance file, call `config_helper.py` with the NO_INSTANCE argument.
 
 Running Config Helper
 ^^^^^^^^^^^^^^^^^^^^^
 
-config_helper.py is located within the `xf_dsp/L2/meta` directory. To run config_helper.py, cd into xf_dsp repository and run the following with requested options:
+`config_helper.py` resides in the `xf_dsp/L2/meta` directory. To run it, change to the `xf_dsp` repository root and run the following command with your chosen options:
 
 .. code-block::
 
@@ -52,8 +60,8 @@ Config Helper Example
 Legality Checking
 ^^^^^^^^^^^^^^^^^
 
-Not all configurations of a given library unit might be supported. For instance, the range of ``TP_DECIMATE_FACTOR`` is affected by the choice of input sample data type ``TT_DATA``. Where possible, such configurations will throw a static_assert compile-time error very early in compilation, or if the library element is being generated from Vitis Model Composer, an error will be reported there prior to generation. The corresponding error messages describe the reason for the error, such as the parameters involved in the conflict, but the static_assert statement does not allow configuration-specific values to be included in the error message.
+Not all configurations of a given library unit are supported. For example, the valid range of ``TP_DECIMATE_FACTOR`` depends on the input sample data type ``TT_DATA``. Where possible, an unsupported configuration throws a ``static_assert`` compile-time error early in compilation. If the library element is generated from Vitis Model Composer, the error is reported there before generation. Error messages describe the cause — such as which parameters conflict — but the ``static_assert`` statement cannot include the specific configuration values.
 
-However, it is not practical in general to predict when the resources required by a configuration will exceed the availability of each resource on the target device (e.g., memory use). In such cases, compile-time errors will still be generated, but they will be generated by the aiecompiler tool, at a later stage of compilation.
+It is not always possible to predict when a configuration exceeds the available resources on the target device (for example, memory). In such cases, the aiecompiler tool generates compile-time errors at a later stage.
 
-Please refer to :ref:`CONFIGURATION`  which describes a configuration utility. This utility will help guide the user to a legal configuration before the compilation stage.
+Use :ref:`CONFIGURATION` to access the configuration utility, which guides you to a valid configuration before compilation.

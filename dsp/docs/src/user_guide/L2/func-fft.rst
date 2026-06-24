@@ -10,18 +10,18 @@
 FFT/iFFT
 ========
 
-The Vitis DSP IP Library contains a VSS (Vitis Sub-System) FFT/iFFT solution.
+The Vitis DSP IP Library contains a VSS (Vitis subsystem) FFT/iFFT solution.
 
-It is an AI Engine + PL implementation is recommended for larger point sizes and Super Sample Rate performance.
+An AI Engine and programmable logic (PL) implementation is recommended for larger point sizes and Super Sample Rate performance.
 
 .. note::
 
-   The VSS FFT/iFFT solution in the Vitis DSP IP Library requires the FFT/IFFT implementation from the Vitis Library. See `Vitis DSP Library documentation <https://docs.amd.com/r/en-US/Vitis_Libraries/dsp/index.html>`_ for more details.
+   The VSS FFT/iFFT solution in the Vitis DSP IP Library requires the FFT/iFFT implementation from the Vitis Library. Refer to the `Vitis DSP Library documentation <https://docs.amd.com/r/en-US/Vitis_Libraries/dsp/index.html>`_ for more details.
 
 .. toctree::
    :maxdepth: 1
 
-   VSS FFT/IFFT 1CH (AI Engine + PL) <func-fft-vss.rst>
+   VSS FFT/iFFT 1CH (AI Engine + PL) <func-fft-vss.rst>
 
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN

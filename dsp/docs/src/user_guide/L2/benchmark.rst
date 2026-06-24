@@ -10,15 +10,16 @@
 Benchmark/QoR
 =============
 
-This section provides the L2 performance benchmarks and Quality of Results (QoR) for the AI Engine digital signal processing (DSP) library elements with various configurations. The results are extracted from a hardware emulation based simulations.
+This section provides the L2 performance benchmarks and Quality of Results (QoR) for the AI Engine digital signal processing (DSP) library elements with various configurations. The results are extracted from hardware emulation based simulations.
 
 The devices used for benchmarking are:
 
 - AIE: xcvc1902-vsva2197-2MP-e-S,
-- AIE-ML is the xcve2802-vsvh1760-2MP-e-S.
-- AIE-MLv2 is the xc2ve3858-ssva2112-2LP-e-S.
+- AIE-ML: xcve2802-vsvh1760-2MP-e-S.
+- AIE-ML v2: xc2ve3858-ssva2112-2MP-e-S.
 
-The benchmark results are obtained using these devices wth an AI Engine clock frequency of 1.25 GHz (AIE and AIE-ML devices) or 1.05 GHz (AIE-MLv2 device) and 64-bit PLIOs at 625 MHz.
+
+The benchmark results are obtained using these devices with an AI Engine clock frequency of 1.25 GHz (AIE and AIE-ML devices) or 1.05 GHz (AIE-ML v2 device) and 64-bit PLIOs at 625 MHz.
 
 The metrics reported for each case are:
 
@@ -29,26 +30,26 @@ The metrics reported for each case are:
 - **DATA_MEMORY**: Total data memory in bytes used by the design.
 - **PROGRAM_MEMORY**: Program memory in bytes used by each kernel.
 
-The AIE_VARIANT parameter refers to the type of AI Engine that is used for each particular case in the benchmark results, this may be AIE, AIE-ML or AIE-MLv2.
+The AIE_VARIANT parameter refers to the type of AI Engine used for each particular case in the benchmark results. This may be AIE, AIE-ML, or AIE-ML v2.
 
 The PROGRAM_MEMORY metrics are harvested for each kernel the design consists of. For example, a finite impulse response (FIR) configured to be implemented on two tiles (CASC_LEN=2) will have two sets of figures displayed in the following table (space delimited).
 
 Latency and Throughput
 ======================
 
-The latency and throughput values are calculated using the input and output timestamp feature of the aiesimulator. The simulator will create files for the input and output PLIO ports containing the data stream and the timestamp information. Each line of data is preceded by a line containing a timestamp of when it was read or written by the graph port. This feature can be enabled using the option:
+The latency and throughput values are calculated using the input and output timestamp feature of the aiesimulator. The simulator creates files for the input and output PLIO ports containing the data stream and the timestamp information. Each line of data is preceded by a line containing a timestamp of when it was read or written by the graph port. Enable this feature using the option:
 
 .. code-block::
 
     aiesimulator --graph-latency
 
-The latency value for each iteration is found by calculating the difference between the first input timestamp and the first output timestamp. Throughput is calculated from the number of samples in an iteration divided by the time difference between the first input timestamp of two consecutive iterations.
+The latency value for each iteration is the difference between the first input timestamp and the first output timestamp. Throughput is calculated from the number of samples in an iteration divided by the time difference between the first input timestamp of two consecutive iterations.
 
-The latency and throughput values, as reported for each library element in the following tables, are representative of the function operating at a stable rate. In this context, stability is assumed once the latency is consistent across consecutive iterations. Following power-on, systems typically take several iterations before a stable rate is achieved. This is due to the buffers being initially empty and other such effects. The figures reported are from when the system has reached a steady state after this initial transient phase.
+The latency and throughput values, as reported for each library element in the following tables, are representative of the function operating at a stable rate. In this context, stability is assumed after the latency is consistent across consecutive iterations. After power-on, systems typically take several iterations before a stable rate is achieved. This is because the buffers are initially empty and other such effects. The figures reported are from when the system has reached a steady state after this initial transient phase.
 
-In the case where there are multiple input ports and/or multiple output ports, the timestamps from the first of these ports are used as these are the ports that contain the first timestamped sample of each iteration.
+If there are multiple input ports and/or multiple output ports, the timestamps from the first of these ports are used because these are the ports that contain the first timestamped sample of each iteration.
 
-Furthermore, if there are no input ports included in the design (such as DDS only mode), then the throughput will be measured using the timestamped data on the output port. In such a case, the latency figures can be marked as invalid with the value reported as ``-1``.
+Furthermore, if there are no input ports included in the design (such as DDS only mode), the throughput is measured using the timestamped data on the output port. In such a case, the latency figures can be marked as invalid with the value reported as ``-1``.
 
 FIR Decimate Asymmetric
 =======================
@@ -102,7 +103,7 @@ The following table gives results for the FIR Single Rate Asymmetric filter with
 FIR TDM
 =======
 
-The following table gives results for TDM FIR filter with a wide variety of supported parameters, which are defined in: :ref:`CONFIGURATION_PARAMETERS_FILTERS`.
+The following table gives results for the TDM FIR filter with a wide variety of supported parameters, which are defined in: :ref:`CONFIGURATION_PARAMETERS_FILTERS`.
 
 :download:`fir_benchmark.csv <https://github.com/Xilinx/Vitis_IP_Libraries/blob/2025.2/dsp/docs/src/csv_data_files/L2/fir_tdm_benchmark.csv>`
 

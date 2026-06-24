@@ -10,17 +10,16 @@
 FIR TDM
 =======
 
-The DSPIPLib contains a Time-Division Multiplexing (TDM) variant of finite impulse response (FIR) filter.
-It is a multi-channel FIR filter with configurable application parameters, e.g. number of channels, FIR length, as well as implementation parameters, e.g. IO buffer size or super sample rate (SSR) operation mode.
+The DSPIPLib contains a Time-Division Multiplexing (TDM) variant of finite impulse response (FIR) filter. It is a multichannel FIR filter with configurable application parameters, for example, number of channels and FIR length, as well as implementation parameters, for example, I/O buffer size or super sample rate (SSR) operation mode.
 
 .. _FIR_TDM_ENTRY:
 
 Entry Point
 ===========
 
-TDM FIR have been placed in a distinct namespace scope: ``xf::dsp::aie::fir::tdm``.
+TDM FIR filters reside in the distinct namespace ``xf::dsp::aie::fir::tdm``.
 
-The graph entry point is the following:
+The graph entry point is:
 
 .. code-block::
 
@@ -29,10 +28,10 @@ The graph entry point is the following:
 Device Support
 ==============
 
-The TDM FIR filter supports AIE, AIE-ML and AIE-MLv2 for all features with the following exceptions:
+The TDM FIR filter supports AIE, AIE-ML, and AIE-ML v2 for all features with the following exceptions:
 
-- The ``cfloat`` data type is not supported on AIE-ML device
-- Round modes available and the enumerated values of round modes are the same for AIE-ML and AIE-MLv2 devices, but differ from those for AIE devices. See :ref:`COMPILING_AND_SIMULATING`.
+- The ``cfloat`` data type is not supported on AIE-ML device.
+- Round modes available and the enumerated values of round modes are the same for AIE-ML and AIE-ML v2 devices, but differ from those for AIE devices. Refer to :ref:`COMPILING_AND_SIMULATING`.
 
 Supported Types
 ===============
@@ -69,23 +68,23 @@ The following table lists the supported combinations of data type and coefficien
    +----------------------+------------+-----------+------------+-----------+------------+-----------+------------+
    | 1. Complex coefficients are not supported for real-only data types.                                          |
    | 2. A mix of float and integer types is not supported.                                                        |
-   | 3. The cfloat data type is not supported on AIE-ML or AIE-MLv2 devices.                                      |
+   | 3. The cfloat data type is not supported on AIE-ML or AIE-ML v2 devices.                                      |
    +--------------------------------------------------------------------------------------------------------------+
 
 Template Parameters
 ===================
 
-To see details on the template parameters for the TDM FIR, see :ref:`API_REFERENCE`.
+For template parameter details for the TDM FIR, refer to :ref:`API_REFERENCE`.
 
 Access Functions
 ================
 
-For the access functions for each FIR variant, see :ref:`API_REFERENCE`.
+For access functions for each FIR variant, refer to :ref:`API_REFERENCE`.
 
 Ports
 =====
 
-To see the ports for each FIR variants, see :ref:`API_REFERENCE`.
+For the ports for each FIR variant, refer to :ref:`API_REFERENCE`.
 
 Design Notes
 ============
@@ -93,23 +92,23 @@ Design Notes
 .. _COEFFS_FOR_FIR_TDM:
 
 Coefficient Array for Filters
------------------------------
+------------------------------
 
-The coefficient array values are passed as an array argument to the constructor as either a single dimension ``std::array`` or a ``std::vector``.
+Pass the coefficient array values to the constructor as either a single-dimension ``std::array`` or a ``std::vector``.
 
 Coefficients - Array Size
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-TDM FIR Coefficient array size is equal to the length of the FIR multiplied by number of channels, i.e.:
+TDM FIR coefficient array size is equal to the length of the FIR multiplied by the number of channels, that is:
 
 ``Coeff_Array_Size = TP_FIR_LEN * TP_TDM_CHANNELS``
 
 .. _FIR_TDM_COEFF_ORGANIZATION:
 
 Coefficients - Array Organization
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Coefficient vector must be created in a form that lists set of taps for each channel at a time as an argument to the constructor in the following form:
+Create the coefficient vector by listing the taps for each channel in sequence. Pass it to the constructor in the following form:
 
 .. code-block::
 
@@ -124,40 +123,37 @@ Coefficient vector must be created in a form that lists set of taps for each cha
 
 where:
 
-- TT_COEFF - coefficient type, e.g. ``int16``,
-- N - FIR Length, i.e. number of taps on each channel (``TP_FIR_LEN``),
+- TT_COEFF - coefficient type, for example, ``int16``,
+- N - FIR Length, that is, number of taps on each channel (``TP_FIR_LEN``),
 - M - Number of TDM Channels  (``TP_TDM_CHANNELS``).
 
 Reloadable Coefficients
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Reloadable coefficients are available through the use of a runtime programmable (RTP) Asynchronous input port, programmed by the processor subsystem (PS) at runtime.
-Reloadable configurations do not require the coefficient array to be passed to the constructor at compile time.
-Instead, the graph's `update()` (refer to `UG1079 Run-Time Parameter Update/Read Mechanisms <https://docs.amd.com/r/en-US/ug1079-ai-engine-kernel-coding/Runtime-Parameter-Update/Read-Mechanisms>`_ for usage instructions) method is used to input the coefficient array.
+Reloadable coefficients are provided through a runtime programmable (RTP) asynchronous input port, programmed by the processor subsystem (PS) at runtime.
+Reloadable configurations do not require the coefficient array at compile time.
+Instead, use the graph's `update()` method — refer to `UG1079 Run-Time Parameter Update/Read Mechanisms <https://docs.amd.com/r/en-US/ug1079-ai-engine-kernel-coding/Runtime-Parameter-Update/Read-Mechanisms>`_ for usage instructions — to supply the coefficient array at runtime.
 
-.. note:: Graph's `update()` method must be called after graph has been initialized, but before kernel starts operation on data samples.
+.. note:: The graph's `update()` method must be called after the graph has been initialized, but before the kernel starts operation on data samples.
 
-Reloadable coefficients are available for single- and multi- kernel configuration, e.g. using Cascade (``TP_CASC_LEN``) and/or Super Sample Rate (``TP_SSR``) modes of operation.
+Reloadable coefficients are available for single- and multi-kernel configuration, for example, using Cascade (``TP_CASC_LEN``) and/or Super Sample Rate (``TP_SSR``) modes of operation.
 
-TDM Channels of will be split by ``TP_SSR`` and FIR taps (for each channel) will be split by ``TP_CASC_LEN``. Each part is sent to a specific kernel via its corresponding RTP port.
+TDM Channels are split by ``TP_SSR`` and FIR taps (for each channel) are split by ``TP_CASC_LEN``. Each part is sent to a specific kernel through its corresponding RTP port.
 
 For more details on multi-kernel modes, refer to: :ref:`FIR_TDM_CASCADE_OPERATION` and :ref:`FIR_TDM_SSR_OPERATION`.
 
 .. _UPDATE_RTP_FIR_TDM:
 
-Reloadable Coefficients - `update_rtp()` method
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Reloadable Coefficients - `update_rtp()` Method
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-An ease of use enhancements with ``update_rtp()`` method is available for each FIR graph class. Method simplifies the process of updating coefficients at runtime to a single method call.
+The ``update_rtp()`` method is available for each FIR graph class and reduces the runtime coefficient update to a single call.
 
-The example below demonstrates how to use the `update_rtp()` method in the context of a FIR filter graph class.
+The following example demonstrates using the `update_rtp()` method in a FIR filter graph class.
 
-The `test_graph` class contains a member `firGraph`, which is a parameterized `fir_sr_asym_graph` FIR filter graph.
-The `test_graph` class also contains an array of coefficient RTP ports. Size of the array is determined by the `getTotalRtpPorts()` method of the `fir_sr_asym_graph` class.
+The `test_graph` class contains a member `firGraph` — a parameterized `fir_sr_asym_graph` FIR filter graph — and an array of coefficient RTP ports sized by the `getTotalRtpPorts()` method.
 
-The `main` function of the host application initializes the graph, updates the RTP ports at runtime using `update_rtp` with coefficients values from the std::vector `taps`.
-
-Next, the `main` function runs the filter for a specified number of iterations and properly ends the graph execution.
+The `main` function initializes the graph, calls `update_rtp` to update the RTP ports with coefficient values from the std::vector `taps`, runs the filter for a specified number of iterations, then ends graph execution.
 
 .. code-block:: cpp
 
@@ -206,116 +202,116 @@ Next, the `main` function runs the filter for a specified number of iterations a
       return 0;
    }
 
-The ``update_rtp`` is a simple to use method that abstracts the implementation details of updating RTP ports with new coefficient values. It performs the following steps:
+The ``update_rtp`` method abstracts the RTP port update sequence. It performs the following steps:
 
-- read total number of rtp ports, using  ``getTotalRtpPorts()``. For details see :ref:`RTP_PORTS_FOR_TDM_FIR`.
-- for each port, read the size of the port, using ``getRtpPortSize(int port)``. For details see :ref:`RTP_ARRAY_SIZE_FOR_TDM_FIR`.
-- for each port, extract the corresponding taps using the ``extractTaps()`` method. For details see :ref:`RTP_ARRAY_CONTENTS_FOR_TDM_FIR`.
-- for each port, update the RTP port with the new taps using the graphs ``update()`` method. For details see `UG1079 Run-Time Parameter Update/Read Mechanisms <https://docs.amd.com/r/en-US/ug1079-ai-engine-kernel-coding/Runtime-Parameter-Update/Read-Mechanisms>`_.
+- Read the total number of RTP ports using ``getTotalRtpPorts()``. Refer to :ref:`RTP_PORTS_FOR_TDM_FIR`.
+- For each port, read the port size using ``getRtpPortSize(int port)``. Refer to :ref:`RTP_ARRAY_SIZE_FOR_TDM_FIR`.
+- For each port, extract the corresponding taps using the ``extractTaps()`` method. Refer to :ref:`RTP_ARRAY_CONTENTS_FOR_TDM_FIR`.
+- For each port, update the RTP port with the new taps using the graph's ``update()`` method. Refer to `UG1079 Run-Time Parameter Update/Read Mechanisms <https://docs.amd.com/r/en-US/ug1079-ai-engine-kernel-coding/Runtime-Parameter-Update/Read-Mechanisms>`_.
 
 .. _RTP_PORTS_FOR_TDM_FIR:
 
-Reloadable Coefficients - Number of ports
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Reloadable Coefficients - Number of Ports
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The total number of RTP ports created by a TDM FIR will be given by the formula:
+The total number of RTP ports created by a TDM FIR is given by the formula:
 
 ``TotalRtpPorts =  (TP_SSR * TP_CASC_LEN)``
 
-For example, if ``TP_SSR = 2`` and ``TP_CASC_LEN = 3``, the coefficient array will be divided into ``2 * 3 = 6`` parts.
+For example, if ``TP_SSR = 2`` and ``TP_CASC_LEN = 3``, the coefficient array is divided into ``2 * 3 = 6`` parts.
 
-FIR TDM graph class provides a helper method: ``getTotalRtpPorts()`` to get number of RTP ports. For more details, refer to: :ref:`API_REFERENCE`.
+The FIR TDM graph class provides a helper method: ``getTotalRtpPorts()`` to get the number of RTP ports. For more details, refer to: :ref:`API_REFERENCE`.
 
 .. _RTP_ARRAY_SIZE_FOR_TDM_FIR:
 
 Reloadable Coefficients - Array Size
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The array size is equal to the length of the FIR multiplied by number of channels and divided equally by AI Engine kernels used, i.e.:
+The array size is equal to the length of the FIR multiplied by the number of channels and divided equally by AI Engine kernels used, that is:
 
 ``TapsPerRtpPort = (TP_FIR_LEN * TP_TDM_CHANNELS) / (TP_SSR * TP_CASC_LEN)``
 
-For example, if ``TP_FIR_LEN = 6`` and ``TP_TDM_CHANNELS = 16``, if ``TP_SSR = 2`` and ``TP_CASC_LEN = 3``, the coefficient array will be divided into ``2 * 3 = 6`` parts.
+For example, if ``TP_FIR_LEN = 6`` and ``TP_TDM_CHANNELS = 16``, if ``TP_SSR = 2`` and ``TP_CASC_LEN = 3``, the coefficient array is divided into ``2 * 3 = 6`` parts.
 
-FIR TDM graph class provides a helper method: ``getTapsPerRtpPort(int kernelNo)`` to get number of FIR taps per RTP port. For more details, refer to: :ref:`API_REFERENCE`.
+The FIR TDM graph class provides a helper method: ``getTapsPerRtpPort(int kernelNo)`` to get the number of FIR taps per RTP port. For more details, refer to: :ref:`API_REFERENCE`.
 
 
 .. _RTP_ARRAY_CONTENTS_FOR_TDM_FIR:
 
 Reloadable Coefficients - Array Contents
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-TDM Channels of will be split by ``TP_SSR`` and FIR taps (for each channel) will be split by ``TP_CASC_LEN``. Each part is sent to a specific kernel via its corresponding RTP port.
+TDM Channels are split by ``TP_SSR`` and FIR taps (for each channel) are split by ``TP_CASC_LEN``. Each part is sent to a specific kernel through its corresponding RTP port.
 
-FIR TDM graph class provides a helper method: ``extractTaps(const std::vector<TT_COEFF>& taps, unsigned int kernelNo)`` to get coefficients for a given kernel. For more details, refer to: :ref:`API_REFERENCE`.
+The FIR TDM graph class provides a helper method: ``extractTaps(const std::vector<TT_COEFF>& taps, unsigned int kernelNo)`` to get coefficients for a given kernel. For more details, refer to: :ref:`API_REFERENCE`.
 
 .. _BUFFER_API_FIRS:
 
 IO Buffer Interface for Filters
--------------------------------
+---------------------------------
 
-On the AI Engine processor, data can be packetized into IO buffers, which are mapped to the local memory.
+On the AI Engine processor, data is packetized into IO buffers mapped to local memory.
 
-IO buffers can be accessed with a 256-bit wide load/store operation, hence offering a throughput of up to 256 Gb/s (based on 1 GHz AI Engine clock).
+IO buffers support 256-bit wide load/store operations, offering throughput of up to 256 Gb/s (based on a 1 GHz AI Engine clock).
 
-IO buffers are implemented using a `ping-pong` mechanism, where the consumer kernel would read the `ping` portion of the buffer while the producer would fill the `pong` portion of the buffer that would be consumed in the next iteration.
+IO buffers use a `ping-pong` mechanism: the consumer kernel reads the `ping` portion while the producer fills the `pong` portion, which is consumed in the next iteration.
 
-In each iteration run, the kernel operates on a set number of samples from the input buffer, defined by the template parameter ``TP_INPUT_WINDOW_VSIZE``. To allow the kernel to safely operate on buffered data, a mechanism of lock acquires and releases is implemented.
+In each iteration, the kernel operates on a fixed number of samples from the input buffer, set by the template parameter ``TP_INPUT_WINDOW_VSIZE``. Safe access to buffered data is coordinated through a lock acquire and release mechanism.
 
 Margin
 ^^^^^^
 
-Input buffer of a TDM FIR may be extended by a margin so that the state of the filter at the end of the previous iteration can be restored.
+The input buffer of a TDM FIR may be extended by a margin so that the state of the filter at the end of the previous iteration can be restored.
 
-Amount of margin required by TDM FIR can be calculated using formula:
+Calculate the margin required by TDM FIR using the formula:
 
 ``Margin_samples = (TP_FIR_LEN - 1) * TP_TDM_CHANNELS``
 
 Internal Margin
 ^^^^^^^^^^^^^^^
 
-For cases where margin data exceeds new arriving data, i.e. when
-``Margin_samples > TP_INPUT_WINDOW_VSIZE``
-margin will be implemented as a separate buffer, internal to the kernel that operates on it.
+For cases where margin data exceeds new arriving data, that is, when
+``Margin_samples > TP_INPUT_WINDOW_VSIZE``,
+margin is implemented as a separate buffer, internal to the kernel that operates on it.
 
-As a result, the input buffers will not be extended by margin data.
+As a result, the input buffers are not extended by margin data.
 
-.. note:: Internal Margin handling is not supported on AIE-ML and AIE-MLv2 devices.
+.. note:: Internal margin handling is not supported on AIE-ML and AIE-ML v2 devices.
 
 Maximizing Throughput
 ^^^^^^^^^^^^^^^^^^^^^
 
-Buffer synchronization requirements introduce a fixed overhead when a kernel is triggered.
-Therefore, to maximize throughput, the input buffer size should be set to the maximum that the system will allow.
+Buffer synchronization introduces a fixed overhead each time a kernel is triggered.
+To maximize throughput, set the input buffer size to the maximum the system allows.
 
-.. note:: To achieve maximum performance, the producer and consumer kernels should be placed in adjacent AI Engine tiles, so the window buffers can be accessed without a requirement for a MM2S/S2MM direct memory access (DMA) stream conversions.
+.. note:: To achieve maximum performance, place the producer and consumer kernels in adjacent AI Engine tiles, so the window buffers can be accessed without a requirement for a MM2S/S2MM direct memory access (DMA) stream conversion.
 
 Multiple Frames
 ^^^^^^^^^^^^^^^
 
-To minimize kernel switching overheads and therefore, maximize performance, TDM FIR supports batching multiple frames into a single input buffer.
-A frame can defined as a set of data samples, one data sample for each TDM channel, i.e. a frame is a set of ``TP_TDM_CHANNELS`` input samples.
+TDM FIR supports batching multiple frames into a single input buffer to reduce kernel switching overhead and maximize performance.
+A frame is a set of ``TP_TDM_CHANNELS`` input samples — one sample per TDM channel.
 
-Input buffer size can be set to an integer multiple of TDM Channels, e.g.:
+Set the input buffer size to an integer multiple of TDM channels, for example:
 ``TP_INPUT_WINDOW_VSIZE = TP_TDM_CHANNELS * NUMBER_OF_FRAMES``
 
-A TDM FIR configured to operate on multiple frames in a given kernel iteration will produce equal amount of output frames.
+A TDM FIR that processes multiple frames per kernel iteration produces an equal number of output frames.
 
 Latency
 ^^^^^^^
 
-Latency of a buffer-based TDM FIR is predominantly due to the buffering in the input and output buffers. Other factors which affect latency are data and coefficient types and FIR length, though these tend to have a lesser effect.
+The latency of a buffer-based TDM FIR is driven primarily by input and output buffer depth. Data type, coefficient type, and FIR length also affect latency, but to a lesser degree.
 
-To minimize the latency, the buffer size should be set to the minimum size that meets the required throughput.
+To minimize latency, set the buffer size to the smallest value that meets the required throughput.
 
 .. _FIR_TDM_MAX_WINDOW_SIZE:
 
 Maximum Window Size
 ^^^^^^^^^^^^^^^^^^^
 
-Window buffer is mapped into a local memory in the area surrounding the kernel that accesses it.
+The window buffer is mapped into a local memory in the area surrounding the kernel that accesses it.
 
-A local memory storage is 32 kB (64 kB for AIE-ML and AIE-MLv2 devices), and the maximum size of the `ping-pong` window buffer should not exceed this limit.
+A local memory storage is 32 kB (64 kB for AIE-ML and AIE-ML v2 devices), and the maximum size of the `ping-pong` window buffer must not exceed this limit.
 
 .. note:: Input buffers may be extended by margin data, which can significantly reduce the maximum window size.
 
@@ -325,8 +321,8 @@ A local memory storage is 32 kB (64 kB for AIE-ML and AIE-MLv2 devices), and the
 Single Buffer Constraint
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-| It is possible to disable the `ping-pong` mechanism, so that the entire available data memory is available to the kernel for computation. However, the single-buffered window can be accessed only by one agent at a time, and it comes with a performance penalty.
-| This can be achieved by using the `single_buffer()` constraint that is applied to an input or output port of each kernel.
+Disabling the `ping-pong` mechanism makes the entire data memory available to the kernel for computation. However, the single-buffered window can be accessed by only one agent at a time, which incurs a performance penalty.
+Disable it by applying the `single_buffer()` constraint to an input or output port of each kernel.
 
 .. code-block::
 
@@ -335,9 +331,9 @@ Single Buffer Constraint
 .. _FIR_TDM_INPUT_ORGANIZATION:
 
 Input Data Samples - Array Organization
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Input Data Samples must be stored in the Input Buffer in a form that lists set of input samples for each channel at a time, i.e. in the following form:
+Store input data samples in the input buffer by listing all samples for each channel in sequence, in the following form:
 
 .. code-block::
 
@@ -351,48 +347,46 @@ Input Data Samples must be stored in the Input Buffer in a form that lists set o
 
 where:
 
-- TT_DATA - data type, e.g. ``cint16``,
+- TT_DATA - data type, for example, ``cint16``,
 - M - Number of TDM Channels  (``TP_TDM_CHANNELS``),
 - F - Number of Frames within Input Buffer   (``NUMBER_OF_FRAMES = TP_INPUT_WINDOW_VSIZE / TP_TDM_CHANNELS``).
 
 Streaming Interface for Filters
--------------------------------
+---------------------------------
 
 Streaming interfaces are not supported by TDM FIR.
 
 
 .. _FIR_TDM_CASCADE_OPERATION:
 
-Cascaded kernels
-----------------
+Cascaded Kernels
+-----------------
 
 Cascade - Operation Mode
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-TDM FIR can be configured to operate on multiple cascaded AI Engine Tiles using ``TP_CASC_LEN`` template parameter.
+Configure TDM FIR to operate across multiple cascaded AI Engine tiles using the ``TP_CASC_LEN`` template parameter.
 
-When used (``TP_CASC_LEN > 1``), an array of ``TP_CASC_LEN`` kernels will be created and connected through cascade interface. Each kernel will operate on a fraction of the ``TP_FIR_LEN`` requested (``TP_FIR_LEN / TP_CASC_LEN``).
+When ``TP_CASC_LEN > 1``, an array of ``TP_CASC_LEN`` kernels is created and connected through the cascade interface. Each kernel processes a fraction of ``TP_FIR_LEN`` (``TP_FIR_LEN / TP_CASC_LEN``).
 
-FIR taps will be split in a balanced way that ensures maximum efficiency of the cascaded chain.
-
-For example, a 16 tap FIR split over 2 cascaded kernels will result in each operating on 8 taps, while cascade of 3 will result in kernels operating on 6 taps on first kernel and 5 taps on remaining kernels.
+Taps are split to maximize efficiency across the cascade chain. For example, a 16-tap FIR over two cascaded kernels assigns 8 taps to each; a cascade of three assigns 6 taps to the first kernel and 5 taps to each of the remaining kernels.
 
 
 Cascade - Resource Utilization
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The number of AI Engine tiles used by a TDM FIR will be an integer multiple of ``TP_CASC_LEN``.
+The number of AI Engine tiles used by a TDM FIR is an integer multiple of ``TP_CASC_LEN``.
 
 Cascade - Port Utilization
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Configuring TDM FIR into a chain of cascaded kernels (``TP_CASC_LEN > 1``) does not affect Input and Output ports.
+Configuring TDM FIR into a chain of cascaded kernels (``TP_CASC_LEN > 1``) does not affect input and output ports.
 
 
-Output type
+Output Type
 -----------
 
-TDM FIR graph class allows to specify 32-bit output type when input type is 16-bit using template parameter ``TT_OUT_DATA``.
+Use the ``TT_OUT_DATA`` template parameter to select a 32-bit output type when the input type is 16-bit.
 
 
 .. _FIR_TDM_SSR_OPERATION:
@@ -400,42 +394,40 @@ TDM FIR graph class allows to specify 32-bit output type when input type is 16-b
 Super Sample Rate
 -----------------
 
-The term Super Sample Rate strictly means the processing of more than one sample per clock cycle. Because the AI Engine is a vector processor, almost every operation is SSR by this definition, making it superfluous. Therefore, in the AI Engine context, SSR is taken to mean an implementation using multiple computation paths to improve performance at the expense of additional resource use.
+The term Super Sample Rate strictly means the processing of more than one sample per clock cycle. Because the AI Engine is a vector processor, almost every operation is SSR by this definition, making it superfluous. Therefore, in the AI Engine context, SSR means an implementation using multiple computation paths to improve performance at the expense of additional resource use.
 
 .. _FIR_TDM_SSR_OPERATION_MODE:
 
 Super Sample Rate - Operation Mode
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-TDM FIR can be configured to operate in SSR Mode using ``TP_SSR`` template parameter.  The mode will create an array of ``TP_SSR`` kernels and create the ``TP_SSR`` amount of the **input** and **output** ports.
+Configure TDM FIR for SSR mode using the ``TP_SSR`` template parameter. This creates ``TP_SSR`` kernels with ``TP_SSR`` input and output ports.
 
-When SSR mode is use, i.e. when ``TP_SSR > 1``, Input Samples, and therefore, corresponding TDM Channels will be split over multiple parallel paths.
+When ``TP_SSR > 1``, input samples — and therefore the corresponding TDM channels — are split across multiple parallel paths. Each path processes ``TP_TDM_CHANNELS / TP_SSR`` channels and ``TP_INPUT_WINDOW_VSIZE / TP_SSR`` input samples per iteration.
 
-As a result, each SSR path will operate on a fraction of the workload, i.e. each path will operate on ``TP_TDM_CHANNELS / TP_SSR`` number of TDM Channels.
-
-Input data samples are distributed across the input paths in a round-robin, sample-by-sample mechanism where each input path processes a fraction of the input samples, i.e. ``TP_INPUT_WINDOW_VSIZE / TP_SSR``. More details in: :ref:`FIR_TDM_SSR_PORT_MAPPING`.
+For port-to-sample mapping details, refer to :ref:`FIR_TDM_SSR_PORT_MAPPING`.
 
 
 .. _FIR_TDM_SSR_OPERATION_RESOURCE_UTILIZATION:
 
 Super Sample Rate - Resource Utilization
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The number of AI Engine tiles used by a TDM FIR will be given by the formula:
+The number of AI Engine tiles used by a TDM FIR is given by the formula:
 
 .. code-block::
 
   NUMBER_OF_AIE_TILES = TP_SSR x TP_CASC_LEN
 
-TDM FIR graph will split the requested FIR workload among the FIR kernels equally, which can mean that each kernel is tasked with a comparatively low computational effort.
+The TDM FIR graph divides the FIR workload equally among kernels. Depending on the configuration, each kernel may carry a relatively low computational load.
 
 
 .. _FIR_TDM_SSR_OPERATION_PORT_UTILIZATION:
 
 Super Sample Rate - Port Utilization
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The number of input/output ports created by a FIR will be given by the formula:
+The number of input/output ports created by a FIR is given by the formula:
 
 * Number of input ports: ``NUM_INPUT_PORTS  = TP_SSR``
 
@@ -444,13 +436,13 @@ The number of input/output ports created by a FIR will be given by the formula:
 .. _FIR_TDM_SSR_PORT_MAPPING:
 
 Super Sample Rate - Sample to Port Mapping
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When a Super Sample Rate operation is used, data is input and output using multiple ports.
 
-The input data channel must be split over multiple ports where each successive input sample is sent to a different input port in a round-robin fashion, i.e., sample 0 goes to input port :code:`in[0]`, sample 1 to :code:`in[1]`, etc. up to ``N-1`` where ``N = TP_SSR``, then sample N goes to :code:`in[0]`, sample N+1 goes to :code:`in[1]` and so on. Output samples are output from the multiple output ports in the same fashion.
+Split the input data channel across ports in round-robin fashion: sample 0 to :code:`in[0]`, sample 1 to :code:`in[1]`, and so on up to sample ``N-1`` (where ``N = TP_SSR``), then repeat from :code:`in[0]`. Output samples follow the same pattern.
 
-For example, for a data stream that looks like:  :code:`int32 x = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ...`, with an SSR parameter set to 3, input samples should be split accordingly:
+For example, for the data stream :code:`int32 x = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, ...` with SSR set to 3, split input samples as follows:
 
 .. code-block::
 
@@ -458,18 +450,18 @@ For example, for a data stream that looks like:  :code:`int32 x = 0, 1, 2, 3, 4,
   in[1] = 1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, ...
   in[2] = 2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, ...
 
-The output data will be produced in a similar method.
+The output data is produced in a similar method.
 
 .. _FIR_TDM_CONSTRAINTS:
 
 Constraints
 -----------
 
-TDM FIR variant has a variety of access methods to help assign a constraint on a kernel and/or a net, e.g.:
+TDM FIR provides access methods for assigning constraints to kernels and nets, for example:
 
-- `getKernels()` which returns a pointer to an array of kernel pointers, or
+- `getKernels()` — returns a pointer to an array of kernel pointers.
 
-More details are provided in the :ref:`API_REFERENCE`.
+For more details, refer to :ref:`API_REFERENCE`.
 
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN

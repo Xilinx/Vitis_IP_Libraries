@@ -8,7 +8,7 @@
 Vitis DSP IP Library
 ========================
 
-The AMD Vitis |trade| digital signal processing IP library (DSPIPLib) provides an implementation of different L1/L2/L3 elements for digital signal processing.
+The AMD Vitis |trade| digital signal processing (DSP) IP library (DSPIPLib) provides an implementation of different L1/L2/L3 elements for digital signal processing.
 
 
 The DSPIPLib contains:
@@ -20,7 +20,7 @@ The DSPIPLib contains:
 AI Engine DSP IP Library
 ========================
 
-The AMD Vitis AI Engine DSP IP library consists of designs of various DSP algorithms, optimized to take full advantage of the processing power of AMD Versal |trade| Adaptive SoC devices, which contain an array of AI Engines high-performance vector processors.
+The AMD Vitis AI Engine DSP IP library consists of designs of various DSP algorithms, optimized to take full advantage of the processing power of AMD Versal |trade| Adaptive SoC devices, which contain an array of AI Engine high-performance vector processors.
 
 The library is organized into three parts:
 
@@ -28,11 +28,11 @@ The library is organized into three parts:
 - L2 AI Engine graphs and VSS Makefiles
 - L3 software APIs
 
-Currently, there are no L3 software APIs. The recommended entry point for all library elements is an L2 graph for designs that include only AI Engines and a vss Makefile for designs including both AI Engine and PL components.
+Currently, there are no L3 software APIs. The recommended entry point for all library elements is an L2 graph for designs that include only AI Engines and a VSS Makefile for designs that include both AI Engine and programmable logic (PL) components.
 
 For more information, refer to :ref:`INTRODUCTION`.
 
-The Vitis AIE DSP IP Library includes a VSS form of a Fast Fourier transform (FFT), and Finite Impulse Response (FIR) filters. For a full list of available DSP functions, refer to :ref:`DSP_LIB_FUNC`.
+The Vitis AIE DSP IP Library includes a VSS form of a fast Fourier transform (FFT), and finite impulse response (FIR) filters. For a full list of available DSP functions, refer to :ref:`DSP_LIB_FUNC`.
 
 .. note::
 

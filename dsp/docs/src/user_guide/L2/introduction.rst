@@ -7,7 +7,7 @@
 .. _INTRODUCTION:
 
 ***********************************
-Introduction for AIE DSP IP library
+Introduction for AIE DSP IP Library
 ***********************************
 
 The DSP IP Library for AI Engine provides a set of DSP IP library elements. Each library element consists of a main graph class and a corresponding kernel class, but also includes a reference model graph and kernel classes.
@@ -116,27 +116,27 @@ The following figure shows the DSPIPLib organization.
 
 
 
-The directories L1 and L2 correspond to the AI Engine kernels and AI Engine graphs for each function, respectively. Inclusion of an L2 graph rather than an L1 element is recommended in your design. L3 is reserved for future software drivers.
+The directories L1 and L2 correspond to the AI Engine kernels and AI Engine graphs for each function, respectively. Include an L2 graph rather than an L1 element in your design. L3 is reserved for future software drivers.
 
 .. note:: The L3 directory is not yet available.
 
-Graph class declarations and constants that allow you to include the library element in your design are located in `L2/include/aie/`. Kernel class definitions, the `.cpp` files and corresponding `.hpp` files are located in the `L1/src/aie` and `L1/include/aie` subdirectories respectively.
+Graph class declarations and constants that allow you to include the library element in your design reside in `L2/include/aie/`. Kernel class definitions, the `.cpp` files and corresponding `.hpp` files reside in the `L1/src/aie` and `L1/include/aie` subdirectories respectively.
 
-The `L2/tests/aie/<library_element>` subdirectory contains a test bench for the library element. Additional test bench files, like stimulus, monitor, and other utility modules are located in the `L1/tests/aie/inc/` folder.
+The `L2/tests/aie/<library_element>` subdirectory contains a test bench for the library element. Additional test bench files, such as stimulus, monitor, and other utility modules, reside in the `L1/tests/aie/inc/` folder.
 
-Reference models graph class for each library element are contained in `L2/tests/aie/common/inc`. Reference models kernel class for each library element are contained in `L1/tests/aie/inc/` and `L1/tests/aie/src`.
+Reference model graph classes for each library element reside in `L2/tests/aie/common/inc`. Reference model kernel classes for each library element reside in `L1/tests/aie/inc/` and `L1/tests/aie/src`.
 
 The `L2/examples` subdirectory holds example wrapper designs to demonstrate the use of the library elements.
 
 .. _USING:
 
 =================================================
-Using Library Elements within User Defined Graphs
+Using Library Elements within User-Defined Graphs
 =================================================
 
-It is recommended that the library element to include in your graph is from the L2 directory, that is, a subgraph. For instance, to include a single rate asymmetrical FIR filter, include `fir_sr_asym_graph.hpp` from the `L2/include/aie/` folder. The test harness for each library unit can be used as a reference example of how to instantiate a parameterized graph. For example, see `L2/tests/aie/<library_element>/test.hpp` and `test.cpp`.
+Include a library element from the L2 directory, that is, a subgraph, in your graph. For example, to include a single rate asymmetrical FIR filter, include `fir_sr_asym_graph.hpp` from the `L2/include/aie/` folder. The test harness for each library unit can be used as a reference example of how to instantiate a parameterized graph. For example, see `L2/tests/aie/<library_element>/test.hpp` and `test.cpp`.
 
-An example `test.h` and `test.cpp`, which instantiates a parameterized graph and exposes a configured (point solution) interface, is provided in the `L2/examples/fir_129t_sym` folder.
+An example `test.h` and `test.cpp` that instantiates a parameterized graph and exposes a configured (point solution) interface is available in the `L2/examples/fir_129t_sym` folder.
 
 Set the environment variable to DSPIPLIB_ROOT.
 
@@ -146,7 +146,7 @@ Set the environment variable to DSPIPLIB_ROOT.
 
 .. note:: Use setenv for csh and export DSPIPLIB_ROOT=<path> for bash.
 
-Use the following option in the aiecompiler command to provide the path:
+Use the following option in the `aiecompiler` command to provide the path:
 
 .. code-block::
 
@@ -160,7 +160,7 @@ Use the following option in the aiecompiler command to provide the path:
 Known Issues
 ============
 
-See Answer Record `75802 <https://www.xilinx.com/support/answers/75802.html>`__ for a list of known issues.
+Refer to Answer Record `75802 <https://www.xilinx.com/support/answers/75802.html>`__ for a list of known issues.
 
 
 .. _TUTORIALS:
@@ -169,11 +169,11 @@ See Answer Record `75802 <https://www.xilinx.com/support/answers/75802.html>`__ 
 Vitis Tutorials
 ===============
 
-AMD provides an extensive library of purpose build tutorials. It is recommended to visit `Vitis Tutorials <https://github.com/Xilinx/Vitis-Tutorials>`__ to get familiar with the AMD Vitis |trade| in-Depth tutorials.
+AMD provides an extensive library of purpose-built tutorials. Visit `Vitis Tutorials <https://github.com/Xilinx/Vitis-Tutorials>`__ for in-depth tutorials for the AMD Vitis |trade| software platform.
 
 To learn how to use the Vitis core tools to develop for AMD Versal |trade|, the first Adaptive SoC, visit `AI Engine Development Tutorials <https://github.com/Xilinx/Vitis-Tutorials/tree/HEAD/AI_Engine_Development>`__. There is a variety of design, methodology, and feature tutorials, where you can also find a highly recommended `DSP Library Tutorial <https://github.com/Xilinx/Vitis-Tutorials/tree/HEAD/AI_Engine_Development/AIE/Feature_Tutorials/08-dsp-library>`__, which demonstrates how to use kernels provided by the DSP IP library for a filtering application, how to analyze the design results, and how to use filter parameters to optimize the design's performance using simulation.
 
-Finally, Simulink users might be interested in the `AI Engine DSP Library and Model Composer Tutorial <https://github.com/Xilinx/Vitis-Tutorials/tree/HEAD/AI_Engine_Development/AIE/Feature_Tutorials/10-aie-dsp-lib-model-composer>`__, which shows how to design AI Engine applications using Model Composer.
+Finally, if you are a Simulink user, you might be interested in the `AI Engine DSP Library and Model Composer Tutorial <https://github.com/Xilinx/Vitis-Tutorials/tree/HEAD/AI_Engine_Development/AIE/Feature_Tutorials/10-aie-dsp-lib-model-composer>`__, which shows how to design AI Engine applications using Model Composer.
 
 
 .. |trade|  unicode:: U+02122 .. TRADEMARK SIGN

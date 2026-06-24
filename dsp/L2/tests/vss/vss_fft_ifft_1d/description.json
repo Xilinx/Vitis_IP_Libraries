@@ -62,7 +62,7 @@
                     ]
                 }
             }
-        }       
+        }
     },
     "data": {
         "file" : [
@@ -145,7 +145,7 @@
         },
         {
             "build_cmd": "$(if $(filter hw,$(TARGET)), $(VITIS_PYTHON3) LIB_DIR/L2/tests/aie/common/scripts/paramenv.py --parameter_file $(PARAMS_FILE) --instance_name $(PARAMS) --command \"make -f PROJECT/helper.mk gen_conn_cfg HELPER_CUR_DIR=PROJECT HELPER_ROOT_DIR=LIB_DIR\")"
-        }      
+        }
     ],
     "post_launch": [
         {
@@ -190,6 +190,7 @@
                 "params": "--aie.verbose  $($(TAG)_TARGET_COMPILE_ARGS)  $($(TAG)_PREPROC_ARGS)",
                 "default": {
                     "TAG": "UUT",
+                    "DSPLIB_ROOT_DIR": "$(XFLIB_DIR)/../../Vitis_Libraries/dsp",
                     "UUT_KERNEL": "fft_ifft_dit_1ch",
                     "REF_KERNEL": "fft_ifft_dit_1ch_ref",
                     "UUT_GRAPH": "vss_fft_ifft_1d_graph",

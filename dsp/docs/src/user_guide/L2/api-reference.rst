@@ -10,7 +10,7 @@
 API Reference Overview
 ======================
 
-For all library elements, the recommended manner to use an instance of each library unit is to include an instance of the library element as a sub-graph of your graph. The graph declarations can be found in: `L2/include/aie/`. This section describes the interface to each library element, i.e., configuration parameters, constructor arguments, and ports.
+For all library elements, the recommended way to use an instance of each library unit is to include an instance of the library element as a sub-graph of your graph. The graph declarations can be found in: `L2/include/aie/`. This section describes the interface to each library element, that is, configuration parameters, constructor arguments, and ports.
 
 - `FIRs <../../rst/group_fir_graphs.html>`_
 

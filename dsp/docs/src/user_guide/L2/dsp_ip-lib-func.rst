@@ -10,7 +10,7 @@
 DSP Library Functions
 =====================
 
-The AMD Vitis |trade| digital signal processing IP library (DSPIPLib) is a configurable library of elements that can be used to develop applications on AMD Versal |trade| AI Engines. This is an Open Source library for DSP applications. The user entry point for each function in this library is a graph (L2 level). Each entry point graph class will contain one or more L1 level kernels and can contain one or more graph objects. Direct use of kernel classes (L1 level) or any other graph class not identified as an entry point is not recommended as this might bypass legality checking.
+The AMD Vitis |trade| digital signal processing (DSP) IP library (DSPIPLib) is a configurable library of elements for developing applications on AMD Versal |trade| AI Engines. This is an open source library for DSP applications. The entry point for each function in this library is a graph (L2 level). Each entry point graph class contains one or more L1 level kernels and can contain one or more graph objects. Direct use of kernel classes (L1 level) or any other graph class not identified as an entry point is not recommended because this may bypass legality checking.
 
 The DSPLib consists of the following DSP elements:
 

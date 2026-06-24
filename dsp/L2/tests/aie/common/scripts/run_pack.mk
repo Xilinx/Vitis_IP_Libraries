@@ -27,7 +27,7 @@ ifndef XPART
 	else ifeq ($(findstring _aie2_,$(PARAMS)),_aie2_)
 		PLATFORM=vek280
 	else ifeq ($(findstring _aie22_,$(PARAMS)),_aie22_)
-		XPART=xc2ve3858-ssva2112-2LP-e-S
+		XPART=xc2ve3858-ssva2112-2MP-e-S
 	else
 		PLATFORM=vck190
 	endif
@@ -43,7 +43,7 @@ ifdef XPART
 PART_OR_PLATFORM=XPART
 # Alias
 ifeq ($(XPART), aie_mlv2)
-PART_OR_PLATFORM_VAL=xc2ve3858-ssva2112-2LP-e-S
+PART_OR_PLATFORM_VAL=xc2ve3858-ssva2112-2MP-e-S
 else
 PART_OR_PLATFORM_VAL=$(XPART)
 endif
